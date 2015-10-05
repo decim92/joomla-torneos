@@ -8,6 +8,8 @@ require_once ( JPATH_BASE .DS.'includes'.DS.'framework.php' );
 $mainframe =& JFactory::getApplication('site');
 $mainframe->initialise();
 
+JHtml::_('bootstrap.framework');
+
 //$db =& JFactory::getDbo();
 
 $option = array(); //prevent problems

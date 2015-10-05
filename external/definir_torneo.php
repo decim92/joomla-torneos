@@ -1,8 +1,13 @@
-
-
-<?php
-
-include "conexion.php";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="../media/jui/css/bootstrap.min.css">
+</head>
+<body>
+	<?php
+	include "conexion.php";
 
 	$query = "SELECT nombre FROM pais";	
 	$db->setQuery($query);
@@ -11,11 +16,18 @@ include "conexion.php";
 	$results = $db->loadObjectList();
 ?>
 
-<form action="." id="defTorneo">
-	Nombre: 
-	<input type="text" name="nombre" id="nombre">
-	Número de equipos:
-	<input type="text" name="nEquipos" id="nEquipos">
+<form action="." id="defTorneo" class="form-horizontal" role="form">
+	<div class="form-group">
+	<label for="nombre" class="col-sm-3 control-label">Nombre:</label> 
+		<div class="col-lg-10">
+		<input type="text" class="form-control" name="nombre" id="nombre">
+		</div>
+	</div>
+	<div class="form-group">
+	<label for="cant_equipos" class="control-label">Número de equipos:</label> 
+		<div class="col-lg-10">	
+		<input type="text" class="form-control" name="nEquipos" id="nEquipos">
+		</div>
 	País:
 	<select name='listaPais' form='defTorneo'>;  		
 
@@ -34,3 +46,8 @@ include "conexion.php";
  ?>    					
   	</select>
 </form>
+	<script type="text/javascript" src="../media/jui/js/jquery.js"></script>
+	<script type="text/javascript" src="../media/jui/js/bootstrap.min.js"></script>
+</body>
+</html>
+
