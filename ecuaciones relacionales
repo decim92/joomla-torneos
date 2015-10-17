@@ -1,0 +1,60 @@
+??? Liga = 1 Eliminatoria = 0 ???
+
+BUSCAR
+
+//Torneos por usuario
+SELECT id_torneo, descripcion FROM torneo WHERE id_usuario = ".$user->id
+
+//Torneos por estado
+SELECT id_torneo, descripcion FROM torneo WHERE publicado = 1;
+
+//Equipos por torneo
+SELECT equipo.id_equipo as id_equip, equipo.nombre 
+FROM jugador_equipo_t, equipo 
+WHERE equipo.id_equipo = jugador_equipo_t.id_equipo AND jugador_equipo_t.id_torneo = ?;
+
+++++++++++++++++++++++++++++++++
+//Equipo por usuario
+SELECT equipo.id_equipo as id_equip, equipo.nombre 
+FROM equipo 
+WHERE id_usuario = ?;
+
+//Jugador por Equipo y torneo
+SELECT jugador.id_jugador as id_juga, jugador.nombres
+FROM jugador, jugador_equipo_t
+WHERE jugador.id_jugador = jugador_equipo_t.id_jugador AND jugador_equipo_t.id_torneo = ?;
+
+//Participante por torneo
+SELECT jugador.id_jugador as id_juga, jugador.nombres
+FROM jugador 
+WHERE id_usuario = ?;
+
+//Cargar grupos por torneo
+SELECT equipo_grupo.id_equipo, equipo_grupo.id_grupo, equipo.nombre, grupo.descripcion FROM equipo_grupo, grupo, equipo WHERE equipo_grupo.id_grupo = grupo.id_grupo AND equipo.id_equipo = equipo_grupo.id_equipo AND grupo.id_torneo = ?;
+
+++++++++++++++++++++++++++++++++
+
+INSERTAR
+
+
+++++++++++++++++++++++++++++++++
+
+
+
+++++++++++++++++++++++++++++++++
+
+ACTUALIZAR
+
+++++++++++++++++++++++++++++++++
+
+
+
+++++++++++++++++++++++++++++++++
+
+ELIMINAR
+
+++++++++++++++++++++++++++++++++
+
+
+
+++++++++++++++++++++++++++++++++

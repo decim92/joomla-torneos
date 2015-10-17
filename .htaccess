@@ -59,6 +59,10 @@ RewriteRule .* index.php [F]
 
 # RewriteBase /
 
+##Custom
+Rewriterule ^definir-tor/([0-9]+) index.php/definir-tor?id_torneo=$1
+
+
 ## Begin - Joomla! core SEF Section.
 #
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

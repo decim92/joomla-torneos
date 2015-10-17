@@ -21,8 +21,6 @@ $option['password'] = '12345';   // Password for database authentication
 $option['database'] = 'torneos';      // Database name
 $option['prefix']   = '';             // Database prefix (may be empty)
 
-$db = & JDatabase::getInstance( $option );
-
 //Hacemos el SQL
 
 //print_r($results);

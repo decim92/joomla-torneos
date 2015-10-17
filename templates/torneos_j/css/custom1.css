@@ -1,0 +1,13 @@
+.container {
+    max-width: 1150px;
+}
+
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+    width: 1150px;
+}
+
+@media (max-width: 960px) {
+    .container {max-width: 960px;}
+    .container {width: auto;}
+}
+

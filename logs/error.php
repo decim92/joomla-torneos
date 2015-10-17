@@ -5,3 +5,9 @@
 
 #Fields: datetime	priority clientip	category	message
 2015-09-25T00:35:13+00:00	INFO ::1	joomlafailure	Username and password do not match or you do not have an account yet.
+2015-10-05T19:01:33+00:00	INFO ::1	joomlafailure	Username and password do not match or you do not have an account yet.
+2015-10-06T02:35:32+00:00	INFO ::1	joomlafailure	Empty password not allowed.
+2015-10-08T20:55:28+00:00	INFO ::1	joomlafailure	Username and password do not match or you do not have an account yet.
+2015-10-13T23:42:24+00:00	INFO ::1	joomlafailure	Username and password do not match or you do not have an account yet.
+2015-10-16T17:12:19+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.
+2015-10-16T17:12:25+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.
