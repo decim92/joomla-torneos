@@ -20,7 +20,34 @@ border-left-color: #111111;
   }
 }*/
 
+.vr{
+	border-right-color: #CCCCCC;
+	border-right-style: solid;
+	border-right-width: 1px; 
+}
+
 .navbar-btn {
     margin-top: 8px;
     margin-bottom: 8px;
+}
+
+/* unvisited link */
+.a_ns:link {
+    color: #000;
+}
+
+/* visited link */
+.a_ns:visited {
+    color: #000;
+}
+
+/* mouse over link */
+.a_ns:hover {
+	 text-decoration: none;
+    color: #000;
+}
+
+/* selected link */
+.a_ns:active {
+    color: #000;
 }

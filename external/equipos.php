@@ -34,10 +34,13 @@
   <head>
   	<meta charset="UTF-8">
   	<title>Document</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
+<link rel="stylesheet" href="css/jasny-bootstrap.min">
 
 <link rel="stylesheet" type="text/css" href="css/custom.css">
+<script src='js/spectrum.js'></script>
+<link rel="stylesheet" href="css/spectrum.css">
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
   <body>
@@ -75,7 +78,7 @@ $(document).ready(function() {
 	include "conexion.php";
 	if(isset($_SESSION['id_torneo'])):
 		$db_jet = & JDatabase::getInstance( $option );
-		$query_jet = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo 	
+		$query_jet = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo, color1, color2 	
 		FROM equipo, jugador_equipo_t 	
 		WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo'];	
 		$db_jet->setQuery($query_jet);
@@ -145,13 +148,27 @@ $(document).ready(function() {
     </form>
   </div>  
 </nav>
-<table class="table table-hover">
-	<tbody data-link="row" class="rowlink">
+
+
 	<?php 
 	//<a href='../index.php/definir-tor?id_torneo=".$id_t."&descripcion=".$descripcion."' target='_parent'>
 	//<a href='../index.php/definir-tor?id_torneo=".$id_t."' target='_parent'>
 	//class='btn btn-info' role='button'
 	if(isset($_SESSION['id_torneo'])):
+    ?>
+  
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>NOMBRE</th>
+      <th>EQUIPACION 1</th>
+      <th>EQUIPACION 2</th>
+    </tr>
+  </thead>
+  <tbody data-link="row" class="rowlink">
+
+  <?php
 		for($i = 0; $i<$numRows_jet; $i++):
 			$id_e = $results_jet[$i]->this_id_equipo;
 			//$descripcion = $results[$i]->descripcion;
@@ -161,10 +178,18 @@ $(document).ready(function() {
 				".$results_jet[$i]->this_id_equipo."		
 			</td>
 			<td>
-				<a href='../definir-tor/".$id_e."' target='_parent'>
+				<a href='ficha_equipo.php' title='Editar'>
 				".$results_jet[$i]->nombre_equipo."
 				</a>
 			</td>			
+      <td>
+        <input type='text' class='disabled' size='1' style='background-color: ".$results_jet[$i]->color1.";'>
+        ".$results_jet[$i]->color1."    
+      </td>
+      <td>
+        ".$results_jet[$i]->color2."
+        </a>
+      </td>     
 		</tr>
 		";  			
   		endfor;  			 
@@ -174,7 +199,11 @@ $(document).ready(function() {
 	?>		
 	</tbody>
 	</table>
-<div id="result"></div>
+  <input type="text" class="disabled" size="1" style="background-color: black;">
+  <input type='color' name='color' />
+<input type='color' name='color2' value='#3355cc' />
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/jasny-bootstrap.min.js"></script>
   </body>
   </html>
