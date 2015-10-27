@@ -9,7 +9,8 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">CREAR EQUIPO</h4>
-            </div class="modal-body">
+            </div>
+            <div class="modal-body">
             <div id="cr_equipo">
             <div class=" container">
 
@@ -21,6 +22,7 @@
 			  
 			  <input type="submit" class="btn btn-default" name="btnCrearEquipo" id="btnCrearEquipo" value="CREAR"></input>
 			</form>
+      </div>
 			</div>
 			</div>
         </div>

@@ -20,29 +20,32 @@
 		$db_all_g = & JDatabase::getInstance( $option );
 		$query_all_g = "SELECT *
 		FROM grupo
-		WHERE id_torneo =".$_SESSION['id_torneo'];	
+		WHERE id_torneo =".$_SESSION['id_torneo']." ORDER BY id_grupo";	
 		$db_all_g->setQuery($query_all_g);
 		$db_all_g->execute();
 		$numRows_all_g = $db_all_g->getNumRows();	
 		$results_all_g = $db_all_g->loadObjectList();
 
     $db_e = & JDatabase::getInstance( $option );
-    $query_e = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo  
-    FROM equipo, jugador_equipo_t   
-    WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo']; 
+    $query_e = "SELECT *
+    FROM grupo
+    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 0";  
     $db_e->setQuery($query_e);
     $db_e->execute();
     $numRows_e = $db_e->getNumRows(); 
     $results_e = $db_e->loadObjectList();
 
     $db_l = & JDatabase::getInstance( $option );
-    $query_l = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo  
-    FROM equipo, jugador_equipo_t   
-    WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo']; 
+    $query_l = "SELECT *
+    FROM grupo
+    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 1";  
     $db_l->setQuery($query_l);
     $db_l->execute();
     $numRows_l = $db_l->getNumRows(); 
     $results_l = $db_l->loadObjectList();
+
+    $db_tabla_grupo = & JDatabase::getInstance( $option );
+    $db_equi_no_g = & JDatabase::getInstance( $option );
 	else:
 		echo "<p>WTF</p>";
 	endif;
@@ -79,56 +82,91 @@
         </ul>
       </li> -->
     </ul>
-    <form name="formLigaEli" id="formLigaEli" action="" class="navbar-form" role="form" method="post">
-
+    <form name="formLigaEli" id="formLigaEli" action="validaciones/v_clasificacion.php" class="navbar-form" role="form" method="post" target="_parent">
+      <input type="hidden" name="elis" value="<?php $cant_e =$numRows_e+1; echo $cant_e?>">
+      <input type="hidden" name="ligas" value="<?php $cant_l =$numRows_l+1; echo $cant_l?>">
       <input type="submit" class="btn btn-default" value="NUEVA LIGA" id="btnNuevaLig" name="btnNuevaLig">
       
       <input type="submit" class="btn btn-default" value="NUEVA ELIMINATORIA" id="btnNuevaEli" name="btnNuevaEli">
+      <input type="submit" class="btn btn-default" value="DESEMPATE" id="btnDesempate" name="btnDesempate">
     </form>
   </div>  
 </nav>
 <?php 
 ?>
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#liga1">Home</a></li>
-    <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+    <?php
+      for($i = 0; $i < $numRows_all_g; $i++):
+        echo "<li";
+      if($i == 0):        
+        echo " class='active'";
+      endif;  
+      echo"><a data-toggle='tab' href='#".$results_all_g[$i]->id_grupo."'>".$results_all_g[$i]->descripcion."</a></li>";
+      endfor;
+    ?>
   </ul>
 
   <div class="tab-content">
-    <div id="liga1" class="tab-pane fade in active">
-    <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="btn-group">
-      <a href="#aniadirEquipoL" class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-backdrop="static"> AÑADIR EQUIPO A LIGA</a>      
+    <?php 
+      for ($i=0; $i < $numRows_all_g; $i++): 
+
+        echo "
+      <div id='".$results_all_g[$i]->id_grupo."' class='tab-pane fade";
+      if($i == 0):        
+        echo " in active";
+      endif;  
+      echo "'>
+    <div class='btn-toolbar pull-right' role='toolbar' aria-label='Toolbar with button groups'>
+      <div class='btn-group'>
+      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO A LIGA</a>      
       </div>
-      <div class="btn-group">
-      <a href="#configL" class="btn btn-primary btn-sm" role="button" data-toggle="modal" data-backdrop="static">CONFIGURAR LIGA</a>
+      <div class='btn-group'>
+      <a href='#config".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'>CONFIGURAR LIGA</a>
       </div>
     </div> 
-    </div>
-    <div id="menu1" class="tab-pane fade">
+    <table class='table table-hover'>
+    <thead>
+      <tr>
+        <th>P</th>
+        <th>NOMBRE</th>
+        <th>P</th>
+        <th>PJ</th>
+        <th>PG</th>
+        <th>PE</th>
+        <th>PP</th>
+        <th>F</th>
+        <th>C</th>
+        <th>D</th>
+      </tr>
+      </thead>
+      <tbody data-link='row' class='rowlink'>";        
+        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo
+        FROM equipo_grupo, equipo
+        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
+        $db_tabla_grupo->setQuery($query_tabla_grupo);
+        $db_tabla_grupo->execute();   
+        $numRows_tabla_grupo = $db_tabla_grupo->getNumRows();      
+        $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
+
+        for ($j=0; $j < $numRows_tabla_grupo; $j++): 
+          echo "<tr>
+          <td>#</td>          
+          <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
+        </tr>"; 
+        endfor;       
+      echo "
+    <tbody>    
+    </table>  
+   </div>
+      ";
+      endfor;
+    ?>
+   
+    <!-- <div id="menu1" class="tab-pane fade">
       <h3>Menu 1</h3>
       <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
+    </div> -->
   </div>
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>P</th>
-      <th>NOMBRE</th>
-      <th>P</th>
-      <th>PJ</th>
-      <th>PG</th>
-      <th>PE</th>
-      <th>PP</th>
-      <th>F</th>
-      <th>C</th>
-      <th>D</th>
-    </tr>
-  </thead>
-  <tbody data-link="row" class="rowlink">
-  </tbody>
-  </table>
 
 <div id="result"></div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -139,55 +177,80 @@
 <!-- <div> -->
 <!-- <a href="equipos.php" role="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#myModal">Launch Demo Modal</a> -->
  
- <div id="aniadirEquipoL" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Content will be loaded here from "remote.php" file -->
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">CREAR EQUIPO</h4>
-            </div class="modal-body">
-            <div id="cr_equipo">
-            <div class=" container">
-
-            <form action="validaciones/v_equipo.php" class="form-inline" role="form" name="equipo" id="equipo" method="post" target="_parent">
-        <div class="form-group" id="divNombreEquipo">
-        <label for="nombreEquipo" class="control-label">NOMBRE EQUIPO:</label>          
-          <input type="text" class="form-control" id="nombreEquipo" name="nombreEquipo">
+ <?php
+      for($i = 0; $i < $numRows_all_g; $i++):
+      echo "
+<div id='aniadirEquipo".$results_all_g[$i]->id_grupo."' class='modal fade'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>            
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title'>AÑADIR EQUIPO</h4>
+            </div>
+            <div class='modal-body'>
+            <div id='cr_equipo'>
+            <div class='container'>
+        <form action='validaciones/v_clasificacion.php' role='form' name='anadirEquipo' id='anadirEquipo".$results_all_g[$i]->id_grupo."' method='post' target='_parent'>
+            <input type='hidden' name ='idGrupo' value='".$results_all_g[$i]->id_grupo."'>
+        <div class='form-group col-sm-5'>
+        <label for='aEquipo' class='control-label'>EQUIPO:</label>          
+        <select class='form-control' name='aEquipo' id='aEquipo'>
+        <option value='0'>-</option>
+          ";          
+        $query_equi_no_g = "SELECT DISTINCT equipo.nombre as nombre_equipo, jugador_equipo_t.id_equipo as id_equip
+        FROM jugador_equipo_t, equipo
+        WHERE jugador_equipo_t.id_equipo = equipo.id_equipo AND jugador_equipo_t.id_equipo 
+        NOT IN (SELECT id_equipo FROM equipo_grupo WHERE id_grupo =".$results_all_g[$i]->id_grupo.")";  
+        $db_equi_no_g->setQuery($query_equi_no_g);
+        $db_equi_no_g->execute();   
+        $numRows_equi_no_g = $db_equi_no_g->getNumRows();      
+        $results_equi_no_g = $db_equi_no_g->loadObjectList();
+        for ($j=0; $j < $numRows_equi_no_g; $j++): 
+          echo "<option value='".$results_equi_no_g[$j]->id_equip."'>".$results_equi_no_g[$j]->nombre_equipo."</option>";
+        endfor;      
+      echo"
+        </select>
+        </div>        
+        <div class='col-sm-12 col-sm-offset-1'>
+        <input type='submit' class='btn btn-success' name='btnAniadirEquipo' id='btnAniadirEquipo' value='ACEPTAR'></input>
+        <input type='button' class='btn btn-default' data-dismiss='modal' value='CANCELAR'></input>
         </div>
-        
-        <input type="submit" class="btn btn-default" name="btnCrearEquipo" id="btnCrearEquipo" value="CREAR"></input>
       </form>
       </div>
-      </div>
-        </div>
-    </div>
-</div>
-<!-- </div> -->
-
-<div id="configL" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Content will be loaded here from "remote.php" file -->
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">CREAR EQUIPO</h4>
-            </div class="modal-body">
-            <div id="cr_equipo">
-            <div class=" container">
-
-            <form action="validaciones/v_equipo.php" class="form-inline" role="form" name="equipo" id="equipo" method="post" target="_parent">
-        <div class="form-group" id="divNombreEquipo">
-        <label for="nombreEquipo" class="control-label">NOMBRE EQUIPO:</label>          
-          <input type="text" class="form-control" id="nombreEquipo" name="nombreEquipo">
-        </div>
-        
-        <input type="submit" class="btn btn-default" name="btnCrearEquipo" id="btnCrearEquipo" value="CREAR"></input>
-      </form>
       </div>
       </div>
         </div>
     </div>
 </div>
 
+<div id='config".$results_all_g[$i]->id_grupo."' class='modal fade'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>            
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title'>CAMBIAR NOMBRE</h4>
+            </div>
+            <div class='modal-body'>
+            <div id='cr_equipo'>
+            <div class='container'>
+      <form action='validaciones/v_clasificacion.php' role='form' name='anadirEquipo' id='equipo' method='post' target='_parent'>
+        <div class='form-group col-sm-5'>
+        <label for='nombreEquipo' class='control-label'>NOMBRE:</label>          
+        <input type='text' name='nombreGrupo' class='form-control' id='nombreGrupo' value='".$results_all_g[$i]->descripcion."'>
+        </div>        
+        <div class='col-sm-12 col-sm-offset-1'>
+        <input type='hidden' name ='idGrupo' value='".$results_all_g[$i]->id_grupo."'>
+        <input type='submit' class='btn btn-success' name='btnConfigG' id='btnConfigG' value='ACEPTAR'></input>
+        <input type='button' class='btn btn-default' data-dismiss='modal' value='CANCELAR'></input>
+        </div>
+      </form>
+      </div>
+      </div>
+      </div>
+        </div>
+    </div>
+</div> 
+    ";
+      endfor;
+    ?>
   </html>

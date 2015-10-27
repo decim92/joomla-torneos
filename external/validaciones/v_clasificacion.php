@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	header('Location: ../../definir-tor');
+ 	header('Location: ../../clasificacion');
  	include "../conexion.php";
 
 	// $_SESSION['categ']= $_POST['listaCate'];
@@ -22,21 +22,21 @@
 
 	if (isset($_POST['btnNuevaEli'])):
 
-	$columns = array('id_usuario', 'id_categoria', 'id_deporte', 'descripcion', 'ubicacion');
-	$values = array($user->id,$_POST['listaCate'],$_SESSION['deport'], $db_ins->quote($_POST['descripcion']), $db_ins->quote($_POST['pac-input']));
+	$columns = array('descripcion', 'tipo_grupo', 'id_torneo');
+	$values = array($db_ins->quote("Eliminatoria ".$_POST['elis']), 0, $_SESSION['id_torneo']);
 	 
 	$query_ins
-	    ->insert($db_ins->quoteName('torneo'))
+	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
 
 	elseif (isset($_POST['btnNuevaLig'])):
 
-	$columns = array('id_usuario', 'id_categoria', 'id_deporte', 'descripcion', 'ubicacion');
-	$values = array($user->id,$_POST['listaCate'],$_SESSION['deport'], $db_ins->quote($_POST['descripcion']), $db_ins->quote($_POST['pac-input']));
+	$columns = array('descripcion', 'tipo_grupo', 'id_torneo');
+	$values = array($db_ins->quote("Liga ".$_POST['ligas']), 1, $_SESSION['id_torneo']);
 	 
 	$query_ins
-	    ->insert($db_ins->quoteName('torneo'))
+	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
 	endif;
@@ -47,6 +47,51 @@
 	// $_SESSION['id_torneo'] = $db_ins->insertid();	
 	}catch(Exception $e){
 		echo $e;		
+	};
+////////////////////////////////
+	try{
+	$db_ins_equi_g = & JDatabase::getInstance( $option );
+	$query_ins_equi_g = $db_ins_equi_g->getQuery(true);
+	$boton = "btnAniadirEquipo";
+
+		if (isset($_POST['btnAniadirEquipo'])):
+		$columns = array('id_equipo', 'id_grupo');
+		$values = array($_POST['aEquipo'], $_POST['idGrupo']);
+		 
+		$query_ins_equi_g
+		    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
+		    ->columns($db_ins_equi_g->quoteName($columns))
+		    ->values(implode(',', $values));
+		$db_ins_equi_g->setQuery($query_ins_equi_g);
+		$db_ins_equi_g->execute();		
+		endif;	
+	
+
+	if (isset($_POST['btnConfigG'])):
+	$db_act_descr_g = & JDatabase::getInstance( $option );
+	$query_act_descr_g = $db_act_descr_g->getQuery(true);
+
+	$fields = array(
+		$db_act_descr_g->quoteName('descripcion') . ' = ' . $db_act_descr_g->quote($_POST['nombreGrupo'])
+		);
+	$conditions = array(
+		$db_act_descr_g->quoteName('id_grupo') . ' = ' . $_POST['idGrupo']
+		);
+	 
+	$query_act_descr_g
+	    ->update($db_act_descr_g->quoteName('grupo'))
+	    ->set($fields)
+	    ->where($conditions);
+	$db_act_descr_g->setQuery($query_act_descr_g);
+	$db_act_descr_g->execute();		
+	endif;
+	 
+				
+	// $_SESSION['correcto'] = 1;
+	// $_SESSION['id_torneo'] = $db_ins->insertid();	
+	}catch(Exception $e){
+		echo $e;		
+		echo $query_act_descr_g;
 	};
 	// endif;
 	// endif;

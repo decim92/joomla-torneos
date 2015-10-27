@@ -30,6 +30,8 @@
 	$id_equipo = $db_insE->insertid();
 	$id_torneo = $_SESSION['id_torneo'];
 
+	
+
 	$query_insE = $db_insE->getQuery(true);
 
 	$columns = array('id_equipo', 'id_torneo');
