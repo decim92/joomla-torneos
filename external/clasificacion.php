@@ -96,6 +96,7 @@
 ?>
   <ul class="nav nav-tabs">
     <?php
+    if(isset($_SESSION['id_torneo'])):
       for($i = 0; $i < $numRows_all_g; $i++):
         echo "<li";
       if($i == 0):        
@@ -109,7 +110,65 @@
   <div class="tab-content">
     <?php 
       for ($i=0; $i < $numRows_all_g; $i++): 
+        if($results_all_g[$i]->tipo_grupo == 1):        
+        echo "
+      <div id='".$results_all_g[$i]->id_grupo."' class='tab-pane fade";
+      if($i == 0):        
+        echo " in active";
+      endif;  
+      echo "'>
+    <div class='btn-toolbar pull-right' role='toolbar' aria-label='Toolbar with button groups'>
+      <div class='btn-group'>
+      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO A LIGA</a>      
+      </div>
+      <div class='btn-group'>
+      <div class='dropdown'>
+        <button class='btn btn-primary dropdown-toggle btn-sm' type='button' data-toggle='dropdown'>CONFIGURAR LIGA
+        <span class='caret'></span></button>
+        <ul class='dropdown-menu' style='right: 0; left: auto; top: 27px;'>
+          <li><a href='#config".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'>CAMBIAR NOMBRE</a></li>    
+          <li><a href='#eliminarG".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'><span class='glyphicon glyphicon-trash'></span> ELIMINAR</a></li>
+        </ul>
+      </div>
+      
+      </div>
+    </div> 
+    <table class='table table-hover'>
+    <thead>
+      <tr>
+        <th>P</th>
+        <th>NOMBRE</th>
+        <th>P</th>
+        <th>PJ</th>
+        <th>PG</th>
+        <th>PE</th>
+        <th>PP</th>
+        <th>F</th>
+        <th>C</th>
+        <th>D</th>
+      </tr>
+      </thead>
+      <tbody data-link='row' class='rowlink'>";        
+        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo
+        FROM equipo_grupo, equipo
+        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
+        $db_tabla_grupo->setQuery($query_tabla_grupo);
+        $db_tabla_grupo->execute();   
+        $numRows_tabla_grupo = $db_tabla_grupo->getNumRows();      
+        $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
 
+        for ($j=0; $j < $numRows_tabla_grupo; $j++): 
+          echo "<tr>
+          <td>#</td>          
+          <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
+        </tr>"; 
+        endfor;       
+      echo "
+    <tbody>    
+    </table>  
+   </div>
+      ";
+      elseif($results_all_g[$i]->tipo_grupo == 0):
         echo "
       <div id='".$results_all_g[$i]->id_grupo."' class='tab-pane fade";
       if($i == 0):        
@@ -159,7 +218,9 @@
     </table>  
    </div>
       ";
+      endif;
       endfor;
+    endif;
     ?>
    
     <!-- <div id="menu1" class="tab-pane fade">
@@ -178,6 +239,7 @@
 <!-- <a href="equipos.php" role="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#myModal">Launch Demo Modal</a> -->
  
  <?php
+ if(isset($_SESSION['id_torneo'])):
       for($i = 0; $i < $numRows_all_g; $i++):
       echo "
 <div id='aniadirEquipo".$results_all_g[$i]->id_grupo."' class='modal fade'>
@@ -250,7 +312,32 @@
         </div>
     </div>
 </div> 
+
+<div id='eliminarG".$results_all_g[$i]->id_grupo."' class='modal fade'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>            
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                <h4 class='modal-title'>SEGURO</h4>
+            </div>
+            <div class='modal-body'>
+            <div id='cr_equipo'>
+            <div class='container'>
+      <form action='validaciones/v_clasificacion.php' role='form' name='eliminarGrupo' id='eliminarGrupo' method='post' target='_parent'>        
+        <div class='col-sm-12 col-sm-offset-1'>
+        <input type='hidden' name ='idGrupo' value='".$results_all_g[$i]->id_grupo."'>
+        <input type='submit' class='btn btn-danger' name='btnEliminarG' id='btnEliminarG' value='ACEPTAR'></input>
+        <input type='button' class='btn btn-default' data-dismiss='modal' value='CANCELAR'></input>
+        </div>
+      </form>
+      </div>
+      </div>
+      </div>
+        </div>
+    </div>
+</div> 
     ";
       endfor;
+  endif;
     ?>
   </html>

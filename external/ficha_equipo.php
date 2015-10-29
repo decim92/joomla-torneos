@@ -103,8 +103,16 @@
   <li><a href="equipos.php">EQUIPO</a></li>
   <li><a class="active">NOMBRE EQUIPO</a></li>
 </ol>
-
-<h2>FICHA EQUIPO</h2>
+<div class="row">
+  <div class="col-xs-1 col-sm-1">
+    <a href="#" class="thumbnail">
+      <img src="img/escudos/x.jpg" alt="" width="60px" height="60px">
+    </a>
+  </div>
+    <h4>FICHA EQUIPO</h4>
+    <h4>DEPORTE</h4>
+</div>
+<!-- <h2>FICHA EQUIPO</h2> -->
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#info_equipo">INFORMACIÓN</a></li>
     <li><a data-toggle="tab" href="#lista_jugadores">JUGADORES</a></li>

@@ -129,7 +129,7 @@ CREATE TABLE `equipo_grupo` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `orden` int(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,32 +142,8 @@ INSERT INTO `equipo_grupo` VALUES (1,24,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (2,25,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (3,20,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (5,4,2,1,0);
+INSERT INTO `equipo_grupo` VALUES (6,4,1,1,0);
 /*!40000 ALTER TABLE `equipo_grupo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `estado_partido`
---
-
-DROP TABLE IF EXISTS `estado_partido`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `estado_partido` (
-  `id_estado` int(11) NOT NULL AUTO_INCREMENT,
-  `descripcion` varchar(10) COLLATE latin1_spanish_ci NOT NULL,
-  PRIMARY KEY (`id_estado`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estado_partido`
---
-
-LOCK TABLES `estado_partido` WRITE;
-/*!40000 ALTER TABLE `estado_partido` DISABLE KEYS */;
-INSERT INTO `estado_partido` VALUES (1,'jugado');
-INSERT INTO `estado_partido` VALUES (2,'pendiente');
-/*!40000 ALTER TABLE `estado_partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -183,8 +159,9 @@ CREATE TABLE `grupo` (
   `tipo_grupo` tinyint(1) NOT NULL,
   `id_torneo` int(11) NOT NULL,
   `c_jornadas` int(2) NOT NULL,
+  `sorteado` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_grupo`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,9 +170,10 @@ CREATE TABLE `grupo` (
 
 LOCK TABLES `grupo` WRITE;
 /*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
-INSERT INTO `grupo` VALUES (1,'Liga 1',1,1,1);
-INSERT INTO `grupo` VALUES (2,'Eliminatoria 1',0,1,1);
-INSERT INTO `grupo` VALUES (3,'Liga 2',1,1,1);
+INSERT INTO `grupo` VALUES (1,'Liga 1',1,1,1,0);
+INSERT INTO `grupo` VALUES (2,'Eliminatoria 1',0,1,1,0);
+INSERT INTO `grupo` VALUES (4,'Eliminatoria 2',0,1,0,0);
+INSERT INTO `grupo` VALUES (5,'Liga 2',1,1,0,0);
 /*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,8 +188,9 @@ CREATE TABLE `jornada` (
   `id_jornada` int(11) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(40) NOT NULL,
   `id_grupo` int(11) NOT NULL,
+  `numero` int(3) NOT NULL,
   PRIMARY KEY (`id_jornada`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,6 +199,7 @@ CREATE TABLE `jornada` (
 
 LOCK TABLES `jornada` WRITE;
 /*!40000 ALTER TABLE `jornada` DISABLE KEYS */;
+INSERT INTO `jornada` VALUES (1,'jornada1',2,2);
 /*!40000 ALTER TABLE `jornada` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -796,17 +776,16 @@ CREATE TABLE `partido` (
   `fecha` datetime DEFAULT NULL,
   `observacion` varchar(250) COLLATE latin1_spanish_ci DEFAULT NULL,
   `id_torneo` int(11) DEFAULT NULL,
-  `id_estado` int(11) NOT NULL,
   `descripcion` varchar(10) COLLATE latin1_spanish_ci NOT NULL,
   `hora` time DEFAULT NULL,
   `lugar` varchar(40) COLLATE latin1_spanish_ci DEFAULT NULL,
   `id_jornada` int(11) NOT NULL,
+  `numero` int(3) NOT NULL,
+  `jugado` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_partido`),
   KEY `id_torneo` (`id_torneo`),
-  KEY `id_estado` (`id_estado`),
-  CONSTRAINT `FK_PARTI_TORNEO` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`),
-  CONSTRAINT `FX_PARTI_ESTADO` FOREIGN KEY (`id_estado`) REFERENCES `estado_partido` (`id_estado`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  CONSTRAINT `FK_PARTI_TORNEO` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -815,7 +794,7 @@ CREATE TABLE `partido` (
 
 LOCK TABLES `partido` WRITE;
 /*!40000 ALTER TABLE `partido` DISABLE KEYS */;
-INSERT INTO `partido` VALUES (2,'2015-10-08 00:00:00',NULL,1,1,'partido p','04:00:00','jajaja',2);
+INSERT INTO `partido` VALUES (3,NULL,NULL,1,'partido x',NULL,NULL,1,1,0);
 /*!40000 ALTER TABLE `partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -922,4 +901,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-26 20:34:23
+-- Dump completed on 2015-10-29 14:02:55

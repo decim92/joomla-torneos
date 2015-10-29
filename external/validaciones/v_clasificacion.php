@@ -21,6 +21,7 @@
 	$query_ins = $db_ins->getQuery(true);
 
 	if (isset($_POST['btnNuevaEli'])):
+		if ($_POST['btnNuevaEli']):
 
 	$columns = array('descripcion', 'tipo_grupo', 'id_torneo');
 	$values = array($db_ins->quote("Eliminatoria ".$_POST['elis']), 0, $_SESSION['id_torneo']);
@@ -29,9 +30,9 @@
 	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
-
+	    endif;
 	elseif (isset($_POST['btnNuevaLig'])):
-
+		if($_POST['btnNuevaLig']):
 	$columns = array('descripcion', 'tipo_grupo', 'id_torneo');
 	$values = array($db_ins->quote("Liga ".$_POST['ligas']), 1, $_SESSION['id_torneo']);
 	 
@@ -39,6 +40,7 @@
 	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
+	    endif;	    
 	endif;
 	 
 	$db_ins->setQuery($query_ins);
@@ -55,6 +57,7 @@
 	$boton = "btnAniadirEquipo";
 
 		if (isset($_POST['btnAniadirEquipo'])):
+			if ($_POST['btnAniadirEquipo']):
 		$columns = array('id_equipo', 'id_grupo');
 		$values = array($_POST['aEquipo'], $_POST['idGrupo']);
 		 
@@ -64,10 +67,12 @@
 		    ->values(implode(',', $values));
 		$db_ins_equi_g->setQuery($query_ins_equi_g);
 		$db_ins_equi_g->execute();		
+			endif;
 		endif;	
 	
 
 	if (isset($_POST['btnConfigG'])):
+		if ($_POST['btnConfigG']):
 	$db_act_descr_g = & JDatabase::getInstance( $option );
 	$query_act_descr_g = $db_act_descr_g->getQuery(true);
 
@@ -84,8 +89,65 @@
 	    ->where($conditions);
 	$db_act_descr_g->setQuery($query_act_descr_g);
 	$db_act_descr_g->execute();		
+	 	endif;
+	endif;
+
+	if (isset($_POST['btnEliminarG'])):
+		if ($_POST['btnEliminarG']):
+	$db_eliminar_g = & JDatabase::getInstance( $option );
+	
+	$query_eliminar_g = $db_eliminar_g->getQuery(true);
+
+	$query_eliminar_g->delete($db_eliminar_g->quoteName('partido_equipos')) 
+		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
+       ->where(array($db_eliminar_g->quoteName('id_partido') . ' IN 
+       	(SELECT id_p FROM 
+       		(SELECT partido_equipos.id_partido AS id_p 
+       			FROM partido_equipos, partido, jornada, grupo 
+       			WHERE partido_equipos.id_partido = partido.id_partido AND partido.id_jornada = jornada.id_jornada and grupo.id_grupo = jornada.id_grupo and grupo.id_grupo = '.$_POST['idGrupo'].')AS p)' )); 
+	
+	$db_eliminar_g->setQuery($query_eliminar_g);
+	$db_eliminar_g->execute();	
+	
+	$query_eliminar_g = $db_eliminar_g->getQuery(true);
+
+	$query_eliminar_g->delete($db_eliminar_g->quoteName('partido')) 
+		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
+       ->where(array($db_eliminar_g->quoteName('id_partido') . ' IN 
+       	(SELECT id_p FROM 
+       		(SELECT partido.id_partido AS id_p 
+       			FROM partido, jornada, grupo 
+       			WHERE partido.id_jornada = jornada.id_jornada and grupo.id_grupo = jornada.id_grupo and grupo.id_grupo = '.$_POST['idGrupo'].')AS p)' )); 
+	
+	$db_eliminar_g->setQuery($query_eliminar_g);
+	$db_eliminar_g->execute();		
+
+	$query_eliminar_g = $db_eliminar_g->getQuery(true);
+
+	$query_eliminar_g->delete($db_eliminar_g->quoteName('jornada')) 
+		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
+       ->where(array($db_eliminar_g->quoteName('id_jornada') . ' IN 
+       	(SELECT id_j FROM 
+       		(SELECT jornada.id_jornada AS id_j 
+       			FROM jornada, grupo 
+       			WHERE grupo.id_grupo = jornada.id_grupo and grupo.id_grupo = '.$_POST['idGrupo'].')AS j)' )); 
+	
+	$db_eliminar_g->setQuery($query_eliminar_g);
+	$db_eliminar_g->execute();		
+
+	$query_eliminar_g = $db_eliminar_g->getQuery(true);
+
+	$query_eliminar_g->delete($db_eliminar_g->quoteName('grupo')) 
+		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
+       ->where(array($db_eliminar_g->quoteName('id_grupo') . ' = '.$_POST['idGrupo'])); 
+	
+	$db_eliminar_g->setQuery($query_eliminar_g);
+	$db_eliminar_g->execute();		
+
+	 	endif;
 	endif;
 	 
+	 // delete from partido where id_partido in (select id_p from (select partido.id_partido as id_p from partido, jornada, grupo where partido.id_jornada = jornada.id_jornada and grupo.id_grupo = jornada.id_grupo and grupo.id_grupo = 1)as p);
 				
 	// $_SESSION['correcto'] = 1;
 	// $_SESSION['id_torneo'] = $db_ins->insertid();	

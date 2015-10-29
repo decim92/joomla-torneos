@@ -10,6 +10,21 @@
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".icon-input-btn").each(function(){
+        var btnFont = $(this).find(".btn").css("font-size");
+        var btnColor = $(this).find(".btn").css("color");
+        $(this).find(".glyphicon").css("font-size", btnFont);
+        $(this).find(".glyphicon").css("color", btnColor);
+        if($(this).find(".btn-xs").length){
+            $(this).find(".glyphicon").css("top", "24%");
+        }
+    }); 
+});
+</script>
+
   <body>
 
  
@@ -83,10 +98,12 @@
       </li> -->
     </ul>
     <form name="formLigaEli" id="formLigaEli" action="" class="navbar-form" role="form" method="post">
-
-      <input type="submit" class="btn btn-default" value="CALENDARIO AUTOMÁTICO" id="btnAutoCalen" name="btnAutoCalen">
-      
+      <span class="icon-input-btn"><span class="glyphicon glyphicon-calendar"></span>
+      <input type="submit" class="btn btn-default" value="CREAR CALENDARIO" id="btnAutoCalen" name="btnAutoCalen">
+      </span>
+      <span class="icon-input-btn"><span class="glyphicon glyphicon-plus"></span>
       <input type="submit" class="btn btn-default" value="NUEVA JORNADA" id="btnNuevaJor" name="btnNuevaJor">
+      </span>
     </form>
   </div>  
 </nav>
@@ -94,6 +111,7 @@
 ?>
   <ul class="nav nav-tabs">
     <?php
+    if(isset($_SESSION['id_torneo'])):
       for($i = 0; $i < $numRows_all_g; $i++):
         echo "<li";
       if($i == 0):        
@@ -119,22 +137,27 @@
       <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'>NUEVO PARTIDO</a>      
       </div>
       <div class='btn-group'>
-      <a href='#config".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'>CONFIGURAR JORNADA</a>
+      <div class='dropdown'>
+        <button class='btn btn-primary dropdown-toggle btn-sm' type='button' data-toggle='dropdown'>JORNADA        
+        <span class='caret'></span></button>
+        <ul class='dropdown-menu' style='right: 0; left: auto; top: 27px;'>
+          <li><a href='#config".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'><span class='glyphicon glyphicon-cog'></span> CONFIGURAR JORNADA</a></li>
+          <li><a href='#config".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'><span class='glyphicon glyphicon-trash'></span> ELIMINAR JORNADA</a></li>
+        </ul>
+      </div>
+      
       </div>
     </div> 
     <table class='table table-hover'>
     <thead>
       <tr>
-        <th>P</th>
-        <th>NOMBRE</th>
-        <th>P</th>
-        <th>PJ</th>
-        <th>PG</th>
-        <th>PE</th>
-        <th>PP</th>
-        <th>F</th>
-        <th>C</th>
-        <th>D</th>
+        <th>EQUIPO 1</th>
+        <th>RESULTADO</th>
+        <th>EQUIPO 2</th>
+        <th>FECHA</th>
+        <th>HORA</th>
+        <th>LUGAR</th>
+        <th>ESTADO</th>
       </tr>
       </thead>
       <tbody data-link='row' class='rowlink'>";        
@@ -158,6 +181,7 @@
    </div>
       ";
       endfor;
+    endif;
     ?>
    
     <!-- <div id="menu1" class="tab-pane fade">
@@ -176,6 +200,7 @@
 <!-- <a href="equipos.php" role="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#myModal">Launch Demo Modal</a> -->
  
  <?php
+ if(isset($_SESSION['id_torneo'])):
       for($i = 0; $i < $numRows_all_g; $i++):
       echo "
 <div id='aniadirEquipo".$results_all_g[$i]->id_grupo."' class='modal fade'>
@@ -249,5 +274,6 @@
 </div> 
     ";
       endfor;
+endif;
     ?>
   </html>
