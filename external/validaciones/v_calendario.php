@@ -1,27 +1,114 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	header('Location: ../../definir-tor');
+ 	header('Location: ../../calendario');
  	include "../conexion.php";
 
- 	function sortearLiga(array $equipos){
- 		$this->$equipos = $equipos;
+ 	function sortearLiga(array $equipos, $numRows_eq, JDatabase $db_ins_part, $id_grupo, JDatabase $db_ins_jor){
 		$partidos = array();
+		$equipos_partido = array();
+		$x = 0;
+		$equipos_invertidos = array_reverse($equipos);		
 
-		foreach($players as $k){
-		        foreach($players as $j){
-		                if($k == $j){
-		                        continue;
-		                }
-		                $z = array($k,$j);
-		                sort($z);
-		                if(!in_array($z,$partidos)){
-		                        $partidos[] = $z;
-		                }
-		        }
-		}
+		$cantidad_partidos = $numRows_eq*($numRows_eq-1)/2;			
+			if($numRows_eq % 2 == 0):
+				$cantidad_jornadas = $numRows_eq-1;	
+				$partidos_ronda = $numRows_eq/2;
+			else:
+				$cantidad_jornadas = $numRows_eq;	
+				$partidos_ronda = ($numRows_eq-1)/2;
+			endif;
 
-		return $partidos;
+		for ($i=0; $i < $cantidad_jornadas; $i++):			
+			$descr_jor = "Jornada ".($i+1);
+			try{
+			$query_ins_jor = $db_ins_jor->getQuery(true);
+			$columns = array('descripcion','id_grupo', 'numero');
+			$values = array($db_ins_jor->quote($descr_jor), $id_grupo, $i+1);
+			$query_ins_jor
+			    ->insert($db_ins_jor->quoteName('jornada'))
+			    ->columns($db_ins_jor->quoteName($columns))
+			    ->values(implode(',', $values));
+
+			$db_ins_jor->setQuery($query_ins_jor);
+			$db_ins_jor->execute();	
+			$id_jornada = $db_ins_jor->insertid();
+			}
+			catch(Exception $e){
+				echo $e;
+			};
+
+	 		for ($j=0; $j < $partidos_ronda; $j++):					
+				$equipos_partido[0] = $equipos[$x];
+				$equipos_partido[1] = $equipos_invertidos[$x];	
+				$partidos[$j] = $equipos_partido;	
+				try{
+			$query_ins_part = $db_ins_part->getQuery(true);
+			 
+			// Insert columns.
+			$columns = array('id_torneo', 'id_jornada');
+			 
+			// Insert values.
+			$values = array($_SESSION['id_torneo'], $id_jornada);
+			 
+			// Prepare the insert query.
+			$query_ins_part
+			    ->insert($db_ins_part->quoteName('partido'))
+			    ->columns($db_ins_part->quoteName($columns))
+			    ->values(implode(',', $values));
+			 
+			// Set the query using our newly populated query object and execute it.
+			$db_ins_part->setQuery($query_ins_part);
+			$db_ins_part->execute();	
+			$id_partido = $db_ins_part->insertid();
+
+			$equipos_p = $partidos[$j];
+				$query_ins_part = $db_ins_part->getQuery(true);
+				 
+				// Insert columns.
+				$columns = array('id_equipo1', 'id_equipo2', 'id_partido');
+				 
+				// Insert values.
+				$values = array($equipos_p[0]->id_eq, $equipos_p[1]->id_eq, $id_partido);
+				 
+				// Prepare the insert query.
+				$query_ins_part
+				    ->insert($db_ins_part->quoteName('partido_equipos'))
+				    ->columns($db_ins_part->quoteName($columns))
+				    ->values(implode(',', $values));
+				 
+				// Set the query using our newly populated query object and execute it.
+				$db_ins_part->setQuery($query_ins_part);
+				$db_ins_part->execute();
+			}
+			catch(Exception $e){
+				echo $e;
+			};			
+				$x++;
+			endfor;
+
+			//Rotar arrays
+			$primero = $equipos[0];
+			$segundo = $equipos[1];
+
+			if($numRows_eq % 2 == 0):
+				for ($k=1; $k < $numRows_eq-1; $k++): 
+					$equipos[$k] = $equipos[$k+1];
+				endfor;
+				$equipos[$numRows_eq-1] = $segundo;
+				$equipos_invertidos = array_reverse($equipos);
+				$x = 0;	
+			else:
+				for ($k=0; $k < $numRows_eq-1; $k++): 
+					$equipos[$k] = $equipos[$k+1];
+				endfor;
+				$equipos[$numRows_eq-1] = $primero;
+				$equipos_invertidos = array_reverse($equipos);
+				$x = 0;	
+			endif;
+
+	 	endfor;
+		
  	}
 
  	function sortearEliminatoria(array $equipos){
@@ -87,53 +174,43 @@
     $numRows_l = $db_l->getNumRows(); 
     $results_l = $db_l->loadObjectList();
 
-    if($_POST['']):
+    if(isset($_POST['btnAutoCalen'])):
+    	if($_POST['btnAutoCalen']):
+    		$db_eq = & JDatabase::getInstance( $option );
+		    $query_eq = "SELECT equipo_grupo.id_equipo as id_eq
+		    FROM equipo_grupo
+		    WHERE equipo_grupo.id_grupo = ".$_POST['id_grupo'];  
+		    $db_eq->setQuery($query_eq);
+		    $db_eq->execute();
+		    $numRows_eq = $db_eq->getNumRows(); 
+		    $results_eq = $db_eq->loadObjectList();
 
-    endif;
-  else:
-    echo "<p>WTF</p>";
+		    if($_POST['tipo_grupo'] == 1):
+		    	$db_liga_creada = & JDatabase::getInstance( $option );
+			    $query_liga_creada = "SELECT count(partido.id_partido) as cant_partidos
+			    FROM partido, jornada, grupo
+			    WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND grupo.id_grupo = ".$_POST['id_grupo'];  
+			    $db_liga_creada->setQuery($query_liga_creada);
+			    $db_liga_creada->execute();
+			    $numRows_liga_creada = $db_eq->getNumRows(); 
+			    $results_liga_creada = $db_liga_creada->loadObjectList();
+		    	if($numRows_liga_creada <= 0):
+		    	$db_ins_part = & JDatabase::getInstance( $option );
+		    	$db_ins_jor = & JDatabase::getInstance( $option );								
+		    	$partidos_liga = sortearLiga($results_eq, $numRows_eq, $db_ins_part, $_POST['id_grupo'], $db_ins_jor);
+		    	else:
+		    		$_SESSION['grupo_creado'] = 1;
+		    	endif;
+		    endif;
+			if($_POST['tipo_grupo'] == 0):
+
+		    endif;
+		 	
+			endif;
+    	endif;
   endif;
 
-	// $_SESSION['categ']= $_POST['listaCate'];
-	// $_SESSION['descrip']= $_POST['descripcion'];
-	// $_SESSION['ubica']= $_POST['pac-input'];
-	// $array_deporte= $_POST['listaDeporte'];
-	// $deporte_explode = explode('|', $array_deporte);
-	// $_SESSION['deport']= $deporte_explode[1];
-	// $_SESSION['individual']= $deporte_explode[0];
-
- 	// if(isset($_REQUEST["btnCrearTorneo"])):
-	// if($validacion == 1):
-	if($_POST['descripcion'] != "" && $_POST['pac-input'] != ""):
-	try{
-		$db_ins = & JDatabase::getInstance( $option );
-	$user = JFactory::getUser();
-	$query_ins = $db_ins->getQuery(true);
-	 
-	// Insert columns.
-	$columns = array('id_usuario', 'id_categoria', 'id_deporte', 'descripcion', 'ubicacion');
-	 
-	// Insert values.
-	$values = array($user->id,$_POST['listaCate'],$_SESSION['deport'], $db_ins->quote($_POST['descripcion']), $db_ins->quote($_POST['pac-input']));
-	 
-	// Prepare the insert query.
-	$query_ins
-	    ->insert($db_ins->quoteName('torneo'))
-	    ->columns($db_ins->quoteName($columns))
-	    ->values(implode(',', $values));
-	 
-	// Set the query using our newly populated query object and execute it.
-	$db_ins->setQuery($query_ins);
-	$db_ins->execute();					
-	$_SESSION['correcto'] = 1;
-	$_SESSION['id_torneo'] = $db_ins->insertid();	
-	}catch(Exception $e){
-		echo "Error";		
-	};
-	else:
-		$_SESSION['correcto'] = 0;
-		echo "Error";		
+	if(isset($_POST['lista_jornadas'])):
+		$_SESSION['id_jornada'] = $_POST['lista_jornadas'];
 	endif;
-	// endif;
-	// endif;
  ?> 

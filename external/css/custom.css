@@ -65,3 +65,7 @@ border-left-color: #111111;
         left: 0.65em;
         top: 30%;
     }
+
+.select-size-small{
+    height: 31px;
+}

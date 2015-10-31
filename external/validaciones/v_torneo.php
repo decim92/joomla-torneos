@@ -14,6 +14,8 @@
 
  	// if(isset($_REQUEST["btnCrearTorneo"])):
 	// if($validacion == 1):
+	if(isset($_POST['btnCrearTorneo'])):
+		if($_POST['btnCrearTorneo']):
 	if($_POST['descripcion'] != "" && $_POST['pac-input'] != ""):
 	try{
 		$db_ins = & JDatabase::getInstance( $option );
@@ -36,6 +38,7 @@
 	$db_ins->setQuery($query_ins);
 	$db_ins->execute();					
 	$_SESSION['correcto'] = 1;
+	$_SESSION['torneo_creado'] = 1;
 	$_SESSION['id_torneo'] = $db_ins->insertid();	
 	}catch(Exception $e){
 		echo "Error";		
@@ -43,6 +46,8 @@
 	else:
 		$_SESSION['correcto'] = 0;
 		echo "Error";		
+	endif;
+		endif;
 	endif;
 	// endif;
 	// endif;

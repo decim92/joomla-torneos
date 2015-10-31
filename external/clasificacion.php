@@ -261,7 +261,7 @@
           ";          
         $query_equi_no_g = "SELECT DISTINCT equipo.nombre as nombre_equipo, jugador_equipo_t.id_equipo as id_equip
         FROM jugador_equipo_t, equipo
-        WHERE jugador_equipo_t.id_equipo = equipo.id_equipo AND jugador_equipo_t.id_equipo 
+        WHERE jugador_equipo_t.id_equipo = equipo.id_equipo AND jugador_equipo_t.id_torneo = ".$_SESSION['id_torneo']." AND jugador_equipo_t.id_equipo 
         NOT IN (SELECT id_equipo FROM equipo_grupo WHERE id_grupo =".$results_all_g[$i]->id_grupo.")";  
         $db_equi_no_g->setQuery($query_equi_no_g);
         $db_equi_no_g->execute();   

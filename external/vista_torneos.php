@@ -20,7 +20,7 @@ include "conexion.php";
 	$user = JFactory::getUser();
 	// $query = "SELECT id_torneo, descripcion FROM torneo WHERE id_usuario = ".$user->id;	
 	$query = "SELECT torneo.id_torneo as id_t, torneo.descripcion as descr_t, categoria.descripcion as descr_c, deporte.nombre as nombre_d, torneo.publicado as estado, puntos_p, puntos_g, puntos_e, ubicacion 
-	FROM torneo, categoria, deporte WHERE categoria.id_categoria = torneo.id_categoria and deporte.id_deporte = torneo.id_deporte and id_usuario=".$user->id;
+	FROM torneo, categoria, deporte WHERE categoria.id_categoria = torneo.id_categoria and deporte.id_deporte = torneo.id_deporte and id_usuario=".$user->id." AND estado = 1 ORDER BY torneo.descripcion";
 	$db->setQuery($query);
 	$db->execute();
 	$numRows = $db->getNumRows();	

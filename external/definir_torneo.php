@@ -9,6 +9,8 @@
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
 <script type="text/javascript" src="js/automapa.js"></script>
+<script type="text/javascript" src="js/jquery-toaster.js"></script>
+<!-- <script type="text/javascript" src="js/custom.js"></script> -->
 <script>
 // $(document).ready(function(){
 // $("select").change(function(){
@@ -69,13 +71,13 @@
 	// $numRows_tt = $db_tt->getNumRows();	
 	// $results_tt = $db_tt->loadObjectList();
 
-	$query_cate = "SELECT UPPER(descripcion) as descr_cate, id_categoria FROM categoria";	
+	$query_cate = "SELECT descripcion as descr_cate, id_categoria FROM categoria";	
 	$db_cate->setQuery($query_cate);
 	$db_cate->execute();
 	$numRows_cate = $db_cate->getNumRows();	
 	$results_cate = $db_cate->loadObjectList();
 
-	$query_dep = "SELECT UPPER(nombre) as nombre_dep, individual, id_deporte FROM deporte";	
+	$query_dep = "SELECT nombre as nombre_dep, individual, id_deporte FROM deporte";	
 	$db_dep->setQuery($query_dep);
 	$db_dep->execute();
 	$numRows_dep = $db_dep->getNumRows();	
@@ -229,11 +231,14 @@
 <?php
 	if(isset($_SESSION['correcto'])):
 	if($_SESSION['correcto'] == 1):
-		$db_datos_torneo = & JDatabase::getInstance( $option );
-		$query_datos_torneo = "SELECT UPPER(descripcion) as descr_torneo, id_deporte FROM torneo WHERE id_torneo =".$_SESSION['id_torneo'];	
-		$db_datos_torneo->setQuery($query_datos_torneo);
-		$db_datos_torneo->execute();		
-		$results_datos_torneo = $db_datos_torneo->loadObjectList();
+		$db_torneo = & JDatabase::getInstance( $option );
+		$user = JFactory::getUser();
+		$query_torneo = "SELECT torneo.descripcion as descr_torneo, ubicacion, categoria.descripcion as descr_categoria, deporte.nombre as nombre_deporte, publicado, puntos_p, puntos_g, puntos_e   
+						FROM torneo, categoria, deporte 
+						WHERE deporte.id_deporte = torneo.id_deporte AND categoria.id_categoria = torneo.id_categoria AND id_torneo = ".$_SESSION['id_torneo']." AND id_usuario =".$user->id." AND estado = 1 ORDER BY torneo.descripcion";	
+		$db_torneo->setQuery($query_torneo);
+		$db_torneo->execute();	
+		$results_torneo = $db_torneo->loadObjectList();
 ?>
 	<div class="panel panel-primary">
 		<div class="panel-heading">DATOS DEL TORNEO</div>
@@ -245,7 +250,7 @@
 					<div class="col-sm-12">					
 						<div class="form-group">
 							<label class="control-label" for="a_nombre_torneo">NOMBRE</label>
-							<input type="text" id="a_nombre_torneo" name="a_nombre_torneo" placeholder="NOMBRE TORNEO" class="form-control">
+							<input type="text" autofocus id="a_nombre_torneo" name="a_nombre_torneo" placeholder="NOMBRE TORNEO" class="form-control" value="<?php echo $results_torneo[0]->descr_torneo?>"> 
 						</div>			
 					</div>
 					<div class="col-sm-12">
@@ -260,12 +265,12 @@
 									// else:
 									// 	echo "<div class='alert alert-success col-xs-12 col-sm-12 pull-left' role='alert'>EXITO</div>";
 									// endif;		
-									echo "<input id='pac-input' name='pac-input' class='form-control' type='text' placeholder='Ingrese Ubicacion'>";
+									echo "<input id='pac-input' name='pac-input' class='form-control' type='text' placeholder='Ingrese Ubicacion' value='".$results_torneo[0]->ubicacion."'>";
 								else:
-									echo "<input id='no-place' name='no-place' class='form-control' type='text' placeholder='Ingrese Ubicacion'>";									
+									echo "<input id='no-place' name='no-place' class='form-control' type='text' placeholder='Ingrese Ubicacion' value='".$results_torneo[0]->ubicacion."'>";									
 								endif;	
 								else:
-									echo "<input id='no-place' name='no-place' class='form-control' type='text' placeholder='Ingrese Ubicacion'>";									
+									echo "<input id='no-place' name='no-place' class='form-control' type='text' placeholder='Ingrese Ubicacion' value='".$results_torneo[0]->ubicacion."'>";									
 								endif;
 							?>
 							<!-- <input id="pac-input" name="pac-input" class="form-control" type="text" placeholder="Ingrese Ubicacion">							 -->
@@ -273,37 +278,37 @@
 					</div>
 					<div class="col-sm-12">					
 						<div class="form-group">
-							<label class="control-label" for="a_nombre_torneo">NOMBRE</label>
-							<input type="text" id="a_nombre_torneo" name="a_nombre_torneo" placeholder="NOMBRE TORNEO" class="form-control">
+							<label class="control-label" for="a_categoria">CATEGORIA</label>
+							<input type="text" id="a_nombre_torneo" name="a_categoria_torneo" placeholder="<?php echo $results_torneo[0]->descr_categoria?>" class="form-control" disabled >
 						</div>			
 					</div>
 					<div class="col-sm-12">					
 						<div class="form-group">
-							<label class="control-label" for="a_nombre_torneo">NOMBRE</label>
-							<input type="text" id="a_nombre_torneo" name="a_nombre_torneo" placeholder="NOMBRE TORNEO" class="form-control">
+							<label class="control-label" for="a_deporte">DEPORTE</label>
+							<input type="text" id="a_nombre_torneo" name="a_deporte_torneo" placeholder="<?php echo $results_torneo[0]->nombre_deporte?>" class="form-control" disabled>
 						</div>			
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
 						<label class="control-label" for="a_puntos_g">PUNTOS POR GANAR</label>
-							<input type="text" id="a_puntos_g" name="a_puntos_g" value="NOMBRE TORNEO" class="form-control">
+							<input type="number" id="a_puntos_g" name="a_puntos_g" value="<?php echo $results_torneo[0]->puntos_g?>" min="0" max="10" class="form-control">
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
 						<label class="control-label" for="a_puntos_p">PUNTOS POR PERDER</label>
-							<input type="text" id="a_puntos_P" name="a_puntos_P" value="NOMBRE TORNEO" class="form-control">
+							<input type="number" id="a_puntos_P" name="a_puntos_p" value="<?php echo $results_torneo[0]->puntos_p?>" min="0" max="10" class="form-control">
 						</div>
 					</div>
 					<div class="col-sm-4">
 						<div class="form-group">
 						<label class="control-label" for="a_puntos_e">PUNTOS POR EMPATAR</label>
-							<input type="text" id="a_puntos_e" name="a_puntos_e" value="NOMBRE TORNEO" class="form-control">						
+							<input type="number" id="a_puntos_e" name="a_puntos_e" value="<?php echo $results_torneo[0]->puntos_e?>" min="0" max="10" class="form-control">						
 						</div>	
 					</div>
 					<div class="col-xs-4 text-center">
 					
-					<input type="submit" class="btn-primary btn btn-block btn-md" name="btn_a_torneo" id="btn_a_torneo" value="GUARDAR">
+					<input type="submit" class="btn-primary btn btn-block btn-md" name="btnATorneo" id="btnATorneo" value="GUARDAR">
 					</div>										
 					</div>
 					</form>
@@ -311,18 +316,46 @@
 				<div class="col-sm-4">
 				<a class="a_ns" href="#modal_estado_t">
 				<div class="well">	
-				<span class="media-heading h4 clearfix text-primary">PUBLICADO</span>				
-					"SI ESTA PUBLICADO LO PODRAN VER LOS DEMAS USUARIOS REGISTRADOS"
+				<?php 
+					if($results_torneo[0]->publicado == 1):
+						echo "<span class='media-heading h4 clearfix text-primary'>PUBLICADO</span>				
+						'LA INFORMACIÓN DEL TORNEO ESTÁ DISPONIBLE EN LA VISTA PÚBLICA.'";
+					elseif($results_torneo[0]->publicado == 0):
+						echo "<span class='media-heading h4 clearfix text-warning'>CONFIGURANDO</span>				
+						'LA INFORMACIÓN DEL TORNEO NO ES VISIBLE EN LA VISTA PÚBLICA.'";
+					endif;
+				?>
+					<form action="validaciones/v_actualizar_t.php" id="vision_torneo" name="vision_torneo" method="post" role="form" target="_parent">
+					<input type='hidden' name='vision_t' value='<?php echo $results_torneo[0]->publicado?>'/>
+						<input  type="submit" class="btn-warning btn btn-sm" name="btn_a_vision" id="btn_a_vision" value="CAMBIAR ESTADO">
+					</form>
 				</div>
 				</a>					
 					<form action="validaciones/v_eliminar_t.php" id="eliminar_torneo" name="eliminar_torneo" method="post" role="form" target="_parent">
-						<input  type="submit" class="btn-danger btn btn-sm pull-right" name="btn_a_torneo" id="btn_a_torneo" value="ELIMINAR TORNEO">
+						<input  type="submit" class="btn-danger btn btn-sm pull-right" name="btn_ocultar_torneo" id="btn_ocultar_torneo" value="ELIMINAR TORNEO">
 					</form>
-					
+					<?php
+					if(isset($_SESSION['torneo_actualizado'])):
+						if($_SESSION['torneo_actualizado'] == 1):
+							echo "
+							<script type='text/javascript'>$.toaster({ priority : 'success', title : 'ACTUALIZACIÓN', message : 'EXITOSA'});</script>
+						";
+						unset($_SESSION['torneo_actualizado']);
+						endif;
+					endif;
+					if(isset($_SESSION['torneo_creado'])):
+						if($_SESSION['torneo_creado'] == 1):
+							echo "
+							<script type='text/javascript'>$.toaster({ priority : 'success', title : 'CREACIÓN', message : 'EXITOSA'});</script>
+						";
+						unset($_SESSION['torneo_creado']);
+						endif;
+					endif;
+					?>					
 				</div>
-			</div>
+			</div>			
 		</div>
-	</div>
+	</div>	
 <?php
 	endif;
 	endif;
