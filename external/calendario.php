@@ -61,8 +61,11 @@ $(document).ready(function(){
 
     $db_tabla_grupo = & JDatabase::getInstance( $option );
     $db_combo_jornadas = & JDatabase::getInstance( $option );
-    $db_equi_no_g = & JDatabase::getInstance( $option );
-    $db_tabla_partidos = & JDatabase::getInstance( $option );
+    $db_tabla_partidos1 = & JDatabase::getInstance( $option );
+    $db_tabla_partidos2 = & JDatabase::getInstance( $option );
+
+    $resultados_partidos1 = array();
+    $resultados_partidos2 = array();
   else:
     echo "<p>WTF</p>";
   endif;
@@ -76,10 +79,16 @@ $(document).ready(function(){
     <?php
     if(isset($_SESSION['id_torneo'])):
       for($i = 0; $i < $numRows_all_g; $i++):
-        echo "<li";
-      if($i == 0):        
-        echo " class='active'";
-      endif;  
+        echo "<li ";
+      if($_SESSION['id_tab']):
+        if($i == $_SESSION['id_tab']):        
+          echo "class= 'active'";
+        endif;
+      else:
+        if($i == 0):        
+          echo "class= 'active'";
+        endif;
+      endif;
       echo"><a data-toggle='tab' href='#".$results_all_g[$i]->id_grupo."'>".$results_all_g[$i]->descripcion."</a></li>";
       endfor;
     ?>
@@ -96,22 +105,113 @@ $(document).ready(function(){
         $db_combo_jornadas->execute();   
         $numRows_combo_jornadas = $db_combo_jornadas->getNumRows();      
         $results_combo_jornadas = $db_combo_jornadas->loadObjectList(); 
-
-        if(isset($_SESSION['id_jornada'])):
-         $query_tabla_partidos = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre, partido_equipos.id_partido 
-        FROM partido_equipos, equipo, partido, jornada 
-        WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_jornada = jornada.id_jornada AND jornada.id_jornada =".$_SESSION['id_jornada'];  
-        else:
-             $query_tabla_partidos = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre, partido_equipos.id_partido 
-          FROM partido_equipos, equipo, partido, jornada 
-          WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_jornada = jornada.id_jornada AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jornada;  
-        endif;
         
-        $db_tabla_partidos->setQuery($query_tabla_partidos);
-        $db_tabla_grupo->execute();   
-        $numRows_tabla_partidos = $db_tabla_partidos->getNumRows();      
-        $results_tabla_partidos = $db_tabla_partidos->loadObjectList();
+        if($results_all_g[$i]->tipo_grupo == 1):        
+        echo "
+      <div id='".$results_all_g[$i]->id_grupo."' class='tab-pane fade";
+      if($_SESSION['id_tab']):
+        if($i == $_SESSION['id_tab']):        
+          echo " in active";
+        endif;
+      else:
+        if($i == 0):        
+          echo " in active";
+        endif;
+      endif;
+      echo "'>
+    <div class='btn-toolbar pull-right' style='margin-top:7px;' role='toolbar' aria-label='Toolbar with button groups'>
+      <div class='btn-group'>
+      <form action='validaciones/v_calendario.php' role='form' method='post' target='_parent'>
+      <input type='hidden' name='id_tab' value='".$i."'>
+      <select class='form-control select-size-small' name='lista_jornadas' onchange='this.form.submit()'>
+      <option value='0'>Mostrar Partidos</option>
+      ";
 
+        for ($m=0; $m < $numRows_combo_jornadas; $m++):
+          echo "<option value='".$results_combo_jornadas[$m]->id_jornada."' ";
+        if(isset($_SESSION['id_jornada'])):
+        if($results_combo_jornadas[$m]->id_jornada == $_SESSION['id_jornada']):
+          echo "selected";
+        endif;
+        endif;
+        echo">".$results_combo_jornadas[$m]->descr_jornada."</option>";
+        endfor;
+      echo "</select>
+      </form>
+      </div>
+      <div class='btn-group'>
+      <a href='#config".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static' class='btn btn-primary btn-sm'><span class='glyphicon glyphicon-cog'></span> CONFIGURAR JORNADA</a>       
+      </div>
+    </div> 
+    <div class='col-sm-2 pull-right'>    
+      <form action='validaciones/v_calendario.php' name='formLigaEli' id='formLigaEli' class='navbar-form' role='form' method='post' target='_parent'>
+    <div class='btn-group'>
+      <span class='icon-input-btn'><span class='glyphicon glyphicon-calendar'></span>
+      <input type='hidden' name='tipo_grupo' value='".$results_all_g[$i]->tipo_grupo."'>
+      <input type='hidden' name='id_grupo' value='".$results_all_g[$i]->id_grupo."'>
+      <input type='submit' class='btn btn-default btn-sm' value='CREAR CALENDARIO' id='btnAutoCalen' name='btnAutoCalen'>
+      </span>
+    </div>
+    </form>
+    </div>
+    <table class='table table-hover'>
+    <thead>
+      <tr>
+        <th>EQUIPO 1</th>
+        <th>RESULTADO</th>
+        <th>EQUIPO 2</th>
+        <th>FECHA</th>
+        <th>HORA</th>
+        <th>LUGAR</th>
+        <th>ESTADO</th>
+      </tr>
+      </thead>
+      <tbody data-link='row' class='rowlink'>"; 
+
+              if(isset($_SESSION['id_jornada'])):
+               $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+              FROM partido_equipos, equipo, partido, jornada, grupo 
+              WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND  partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+
+              $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+              FROM partido_equipos, equipo, partido, jornada, grupo
+              WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+              else:
+                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+                FROM partido_equipos, equipo, partido, jornada, grupo
+                WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jornada." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+
+                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+                FROM partido_equipos, equipo, partido, jornada, grupo
+                WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jornada." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+              endif;
+              unset($_SESSION['id_jornada']);
+              
+              $db_tabla_partidos1->setQuery($query_tabla_partidos1);
+              $db_tabla_partidos1->execute();   
+              $numRows_tabla_partidos1 = $db_tabla_partidos1->getNumRows();      
+              $results_tabla_partidos1 = $db_tabla_partidos1->loadObjectList();
+
+              $db_tabla_partidos2->setQuery($query_tabla_partidos2);
+              $db_tabla_partidos2->execute();   
+              $numRows_tabla_partidos2 = $db_tabla_partidos2->getNumRows();      
+              $results_tabla_partidos2 = $db_tabla_partidos2->loadObjectList();
+
+              for ($j=0; $j < $numRows_tabla_partidos1; $j++): 
+                echo "<tr>
+                <td>".$results_tabla_partidos1[$j]->nombre_equipo."</td>          
+                <td>-</td>          
+                <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>          
+                </tr>"; 
+              endfor;             
+
+        
+      echo "
+    <tbody>    
+    </table>  
+   </div>
+      ";
+      elseif($results_all_g[$i]->tipo_grupo == 0):
         echo "
       <div id='".$results_all_g[$i]->id_grupo."' class='tab-pane fade";
       if($i == 0):        
@@ -122,8 +222,8 @@ $(document).ready(function(){
       <div class='btn-group'>
       <form>
       <select class='form-control select-size-small' name='lista_jornadas' onchange='this.form.submit()'>";
-        for ($i=0; $i < $numRows_combo_jornadas; $i++):
-          echo "<option value='".$results_combo_jornadas[$i]->id_jornada."'>".$results_combo_jornadas[$i]->descr_jornada."</option>";
+        for ($m=0; $m < $numRows_combo_jornadas; $m++):
+          echo "<option value='".$results_combo_jornadas[$m]->id_jornada."'>".$results_combo_jornadas[$m]->descr_jornada."</option>";
         endfor;
       echo "</select>
       </form>
@@ -157,17 +257,19 @@ $(document).ready(function(){
       </thead>
       <tbody data-link='row' class='rowlink'>";        
 
-        // for ($j=0; $j < $numRows_tabla_grupo; $j++): 
-        //   echo "<tr>
-        //   <td>#</td>          
-        //   <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
-        // </tr>"; 
-        // endfor;       
+        for ($j=0; $j < $numRows_tabla_partidos1; $j++): 
+          echo "<tr>
+          <td>".$results_tabla_partidos1[$j]->nombre_equipo."</td>          
+          <td>-</td>          
+          <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>          
+        </tr>"; 
+        endfor;       
       echo "
     <tbody>    
     </table>  
    </div>
       ";
+      endif;
       endfor;
     endif;
     ?>
@@ -247,17 +349,6 @@ $(document).ready(function(){
         <select class='form-control' name='aEquipo' id='aEquipo' form='anadirEquipo'>
         <option value='0'>-</option>
           ";          
-        $query_equi_no_g = "SELECT DISTINCT equipo.nombre as nombre_equipo, jugador_equipo_t.id_equipo as id_equip
-        FROM jugador_equipo_t, equipo
-        WHERE jugador_equipo_t.id_equipo = equipo.id_equipo AND jugador_equipo_t.id_equipo 
-        NOT IN (SELECT id_equipo FROM equipo_grupo WHERE id_grupo =".$results_all_g[$i]->id_grupo.")";  
-        $db_equi_no_g->setQuery($query_equi_no_g);
-        $db_equi_no_g->execute();   
-        $numRows_equi_no_g = $db_equi_no_g->getNumRows();      
-        $results_equi_no_g = $db_equi_no_g->loadObjectList();
-        for ($j=0; $j < $numRows_equi_no_g; $j++): 
-          echo "<option value='".$results_equi_no_g[$j]->id_equip."'>".$results_equi_no_g[$j]->nombre_equipo."</option>";
-        endfor;      
       echo"
         </select>
         </div>        

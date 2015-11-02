@@ -183,39 +183,87 @@
       <a href='#config".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'>CONFIGURAR LIGA</a>
       </div>
     </div> 
-    <table class='table table-hover'>
-    <thead>
-      <tr>
-        <th>P</th>
-        <th>NOMBRE</th>
-        <th>P</th>
-        <th>PJ</th>
-        <th>PG</th>
-        <th>PE</th>
-        <th>PP</th>
-        <th>F</th>
-        <th>C</th>
-        <th>D</th>
-      </tr>
-      </thead>
-      <tbody data-link='row' class='rowlink'>";        
-        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo
-        FROM equipo_grupo, equipo
-        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
-        $db_tabla_grupo->setQuery($query_tabla_grupo);
-        $db_tabla_grupo->execute();   
-        $numRows_tabla_grupo = $db_tabla_grupo->getNumRows();      
-        $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
+      
+      
+  <div class='box-info full relative'>
+    
+  <div id='play-off-cross' class='top-bordered'>
+    <div class='cruces-eliminatoria'>
+      <div><!---->
+          <div class='ronda'>
+          <div class='h5'>Semifinal</div>
+              <div style='height: 100px;'>
+                <div class='linea-vertical'>
+                <div class='linea-horizontal'></div>
+                <div class='caja-participantes'>                      
+                <div data-equipo-cruce='354555' class='equipo-cruce ganador'>
+                    <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
+                    <a href='https://mileyenda.com/es/admin/team/354555'>
+                    milan</a><span>
+                          1                         
+                        </span>
+                </div>                                                                                                                            
+                <div data-equipo-cruce='347258' class='equipo-cruce'>
+                  <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
+                  <a href='https://mileyenda.com/es/admin/team/347258'>
+                    Mil                         
+                    </a>
+                  <span>
+                    0                         
+                    </span>
+                </div>  
+                </div>
+                </div>
+              </div>
+              <div style='height: 100px;'>
+                <div class='linea-vertical'>
+                <div class='linea-horizontal'></div>
+                <div class='caja-participantes'>                        
+                <div data-equipo-cruce='372204' class='equipo-cruce ganador'>
+                          <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/0YANWNleYnZ1Gtco8D8bjwdm.30x30.jpg'>
+                          <a href='https://mileyenda.com/es/admin/team/372204'>
+                            eeeee                         </a>
+                          <span>                                                      
+                          </span>
+                </div>
+                <div></div>                       
+                </div>
+                </div>
+              </div>
+            </div><!--
+          --><div class='ronda'>
+          <div class='h5'>Final</div>
+            <div style='height: 200px;'>
+            <div class='linea-vertical'>
+            <div class='linea-horizontal'></div>
+            <div class='caja-participantes'>                          
 
-        for ($j=0; $j < $numRows_tabla_grupo; $j++): 
-          echo "<tr>
-          <td>#</td>          
-          <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
-        </tr>"; 
-        endfor;       
-      echo "
-    <tbody>    
-    </table>  
+            <div data-equipo-cruce='354555' class='equipo-cruce'>
+                          <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
+                          <a href='https://mileyenda.com/es/admin/team/354555'>
+                            milan                         </a>
+                          <span>
+                          </span>
+            </div>                                                                                        
+            <div data-equipo-cruce='372204' class='equipo-cruce'>
+              <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/0YANWNleYnZ1Gtco8D8bjwdm.30x30.jpg'>
+              <a href='https://mileyenda.com/es/admin/team/372204'>
+                eeeee                         </a>
+              <span>
+            </span>
+            </div>                                        
+            </div>
+            </div>
+            </div>
+            </div><!--
+        --></div><!--
+      --><div><!-- Linea de los titulos -->&nbsp;</div>
+    </div>
+  </div>
+        
+  </div>
+
+
    </div>
       ";
       endif;

@@ -109,6 +109,11 @@
       <img src="img/escudos/x.jpg" alt="" width="60px" height="60px">
     </a>
   </div>
+  <form action="validaciones/v_escudo.php" method="post" enctype="multipart/form-data">
+            <input type="text" name="nombre" placeholder="nombre del equipo/jugador"> <br>
+            <input type="file" name="imagen"/> <br>
+            <input type="submit" value="guardar"/> 
+  </form>
     <h4>FICHA EQUIPO</h4>
     <h4>DEPORTE</h4>
 </div>

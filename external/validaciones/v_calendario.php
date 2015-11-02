@@ -111,25 +111,38 @@
 		
  	}
 
- 	function sortearEliminatoria(array $equipos){
- 		$cantidad_equipos = $_POST['numero_equipos'];		
+ 	function sortearEliminatoria(array $equipos, $numRows_eq, JDatabase $db_ins_part, $id_grupo, JDatabase $db_ins_jor){
+ 			$cantidad_equipos = $numRows_eq;		
 			$cantidad_partidos = $cantidad_equipos -1;			
 			$cantidad_jornadas = ceil(log($cantidad_equipos, 2));			
 			$preliminares = $cantidad_equipos - pow(2, floor(log($cantidad_equipos, 2)));
 			$standby = $cantidad_equipos - $preliminares*2;			
 			$partidos_potencia2 = $cantidad_equipos/2;
+			$partidos_ronda2 = $standby + $preliminares;
 
 			echo "Equipos:".$cantidad_equipos."<br>";
 			echo "Partidos:".$cantidad_partidos."<br>";
 			echo "Jornadas:".$cantidad_jornadas."<br>";
 			echo "Preliminares:".$preliminares."<br>";
 			echo "Espera:".$standby."<br>";
+			echo "Partidos potencia 2: ".$partidos_potencia2."<br>";
+			echo "Partidos ronda 2: ".$partidos_ronda2."<br>";
 
+			$partidos = array();
+			$equipos_partido = array();
+			$nombre_jornadas() = array('Final', 'Semifinal', 'Cuartos de Final', 'Octavos de Final', 'Primera Ronda', 'Preliminares' );
 			$x=0;
 			$y=$cantidad_equipos-1;
 
+			//Insertar primer jornada
+
 			if($preliminares != 0):
 			for ($j=0; $j < $preliminares; $j++):
+				// $equipos_partido[0] = $equipos[$x];
+				// $equipos_partido[1] = $equipos[$x+1];	
+				// $partidos[$j] = $equipos_partido;
+				//Metodo Insertar
+				// $equipos_p = $partidos[$j];
 				$partidos[$j] = $equipos[$x]."|".$equipos[$x+1];
 				$x++;
 				$x++;
@@ -143,6 +156,8 @@
 				echo $partidos[$j]."<br>";
 			endfor;
 			endif;
+
+			//Insertar el resto de partidos con sus jornadas
  	}
 
  	if(isset($_SESSION['id_torneo'])):
@@ -155,24 +170,6 @@
     $db_all_g->execute();
     $numRows_all_g = $db_all_g->getNumRows(); 
     $results_all_g = $db_all_g->loadObjectList();
-
-    $db_e = & JDatabase::getInstance( $option );
-    $query_e = "SELECT *
-    FROM grupo
-    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 0";  
-    $db_e->setQuery($query_e);
-    $db_e->execute();
-    $numRows_e = $db_e->getNumRows(); 
-    $results_e = $db_e->loadObjectList();
-
-    $db_l = & JDatabase::getInstance( $option );
-    $query_l = "SELECT *
-    FROM grupo
-    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 1";  
-    $db_l->setQuery($query_l);
-    $db_l->execute();
-    $numRows_l = $db_l->getNumRows(); 
-    $results_l = $db_l->loadObjectList();
 
     if(isset($_POST['btnAutoCalen'])):
     	if($_POST['btnAutoCalen']):
@@ -192,9 +189,9 @@
 			    WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND grupo.id_grupo = ".$_POST['id_grupo'];  
 			    $db_liga_creada->setQuery($query_liga_creada);
 			    $db_liga_creada->execute();
-			    $numRows_liga_creada = $db_eq->getNumRows(); 
+			    $numRows_liga_creada = $db_liga_creada->getNumRows(); 
 			    $results_liga_creada = $db_liga_creada->loadObjectList();
-		    	if($numRows_liga_creada <= 0):
+		    	if($results_liga_creada[0]->cant_partidos <= 0):
 		    	$db_ins_part = & JDatabase::getInstance( $option );
 		    	$db_ins_jor = & JDatabase::getInstance( $option );								
 		    	$partidos_liga = sortearLiga($results_eq, $numRows_eq, $db_ins_part, $_POST['id_grupo'], $db_ins_jor);
@@ -203,7 +200,21 @@
 		    	endif;
 		    endif;
 			if($_POST['tipo_grupo'] == 0):
-
+				$db_eli_creada = & JDatabase::getInstance( $option );
+			    $query_eli_creada = "SELECT count(partido.id_partido) as cant_partidos
+			    FROM partido, jornada, grupo
+			    WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND grupo.id_grupo = ".$_POST['id_grupo'];  
+			    $db_eli_creada->setQuery($query_eli_creada);
+			    $db_eli_creada->execute();
+			    $numRows_eli_creada = $db_eli_creada->getNumRows(); 
+			    $results_eli_creada = $db_eli_creada->loadObjectList();
+			    if($results_liga_creada[0]->cant_partidos <= 0):
+		    	$db_ins_part = & JDatabase::getInstance( $option );
+		    	$db_ins_jor = & JDatabase::getInstance( $option );								
+		    	$partidos_liga = sortearEliminatoria($results_eq, $numRows_eq, $db_ins_part, $_POST['id_grupo'], $db_ins_jor);
+		    	else:
+		    		$_SESSION['grupo_creado'] = 1;
+		    	endif;
 		    endif;
 		 	
 			endif;
@@ -212,5 +223,6 @@
 
 	if(isset($_POST['lista_jornadas'])):
 		$_SESSION['id_jornada'] = $_POST['lista_jornadas'];
+	$_SESSION['id_tab'] = $_POST['id_tab'];
 	endif;
  ?> 

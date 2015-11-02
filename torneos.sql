@@ -62,7 +62,7 @@ CREATE TABLE `deporte` (
 LOCK TABLES `deporte` WRITE;
 /*!40000 ALTER TABLE `deporte` DISABLE KEYS */;
 INSERT INTO `deporte` VALUES (1,'Fútbol',0);
-INSERT INTO `deporte` VALUES (2,'Tenis de Mesa',1);
+INSERT INTO `deporte` VALUES (2,'Baloncesto',1);
 /*!40000 ALTER TABLE `deporte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `equipo_grupo` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `orden` int(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,6 +142,8 @@ INSERT INTO `equipo_grupo` VALUES (1,24,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (2,25,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (3,20,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (4,21,1,1,0);
+INSERT INTO `equipo_grupo` VALUES (5,21,5,1,0);
+INSERT INTO `equipo_grupo` VALUES (6,20,5,1,0);
 /*!40000 ALTER TABLE `equipo_grupo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +191,7 @@ CREATE TABLE `jornada` (
   `id_grupo` int(11) NOT NULL,
   `numero` int(3) NOT NULL,
   PRIMARY KEY (`id_jornada`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,6 +203,7 @@ LOCK TABLES `jornada` WRITE;
 INSERT INTO `jornada` VALUES (14,'Jornada 1',1,1);
 INSERT INTO `jornada` VALUES (15,'Jornada 2',1,2);
 INSERT INTO `jornada` VALUES (16,'Jornada 3',1,3);
+INSERT INTO `jornada` VALUES (17,'Jornada 1',5,1);
 /*!40000 ALTER TABLE `jornada` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -785,7 +788,7 @@ CREATE TABLE `partido` (
   PRIMARY KEY (`id_partido`),
   KEY `id_torneo` (`id_torneo`),
   CONSTRAINT `FK_PARTI_TORNEO` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -800,6 +803,7 @@ INSERT INTO `partido` VALUES (41,NULL,NULL,1,'',NULL,NULL,15,0,0);
 INSERT INTO `partido` VALUES (42,NULL,NULL,1,'',NULL,NULL,15,0,0);
 INSERT INTO `partido` VALUES (43,NULL,NULL,1,'',NULL,NULL,16,0,0);
 INSERT INTO `partido` VALUES (44,NULL,NULL,1,'',NULL,NULL,16,0,0);
+INSERT INTO `partido` VALUES (45,NULL,NULL,1,'',NULL,NULL,17,0,0);
 /*!40000 ALTER TABLE `partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -818,7 +822,7 @@ CREATE TABLE `partido_equipos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_partido` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -833,6 +837,7 @@ INSERT INTO `partido_equipos` VALUES (24,25,0,0,21,41);
 INSERT INTO `partido_equipos` VALUES (20,21,0,0,22,42);
 INSERT INTO `partido_equipos` VALUES (24,20,0,0,23,43);
 INSERT INTO `partido_equipos` VALUES (21,25,0,0,24,44);
+INSERT INTO `partido_equipos` VALUES (21,20,0,0,25,45);
 /*!40000 ALTER TABLE `partido_equipos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -909,4 +914,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-31 13:58:14
+-- Dump completed on 2015-11-02  0:29:55

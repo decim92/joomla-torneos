@@ -69,3 +69,140 @@ border-left-color: #111111;
 .select-size-small{
     height: 31px;
 }
+
+table{
+ text-align: center;
+
+}
+
+table th{
+ text-align: center;
+
+}
+
+.top-bordered {
+    border-top: 1px solid #ddd
+}
+
+#play-off-cross .cruces-eliminatoria {
+    white-space: nowrap;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    position: relative
+}
+#play-off-cross .cruces-eliminatoria>div {
+    display: inline-block
+}
+#play-off-cross .cruces-eliminatoria>div:last-child {
+    left: 0
+}
+#play-off-cross .cruces-eliminatoria .ronda,
+#play-off-cross .cruces-eliminatoria>div:last-child {
+    vertical-align: top;
+    display: inline-block;
+    width: 300px
+}
+#play-off-cross .cruces-eliminatoria .ronda>div,
+#play-off-cross .cruces-eliminatoria>div:last-child {
+    position: relative
+}
+#play-off-cross .cruces-eliminatoria .ronda>div:first-child,
+#play-off-cross .cruces-eliminatoria>div:last-child {
+    text-align: center;
+    overflow: hidden;
+    padding: 14px 0 8px
+}
+#play-off-cross .cruces-eliminatoria .linea-vertical {
+    overflow: visible;
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    height: 50%
+}
+#play-off-cross .cruces-eliminatoria .ronda:not(:first-child) .linea-vertical {
+    border-left: 1px solid #000
+}
+#play-off-cross .cruces-eliminatoria .linea-horizontal {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    border-top: 1px solid #000
+}
+#play-off-cross .cruces-eliminatoria .ronda:first-child .linea-horizontal,
+#play-off-cross .cruces-eliminatoria .ronda:last-child .linea-horizontal {
+    width: calc(100% - 20px)
+}
+#play-off-cross .cruces-eliminatoria .ronda:first-child .linea-horizontal {
+    margin-left: 20px
+}
+#play-off-cross .cruces-eliminatoria .ronda:last-child .linea-horizontal {
+    margin-right: 20px
+}
+#play-off-cross .cruces-eliminatoria .ronda:only-child .linea-horizontal {
+    border: none
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes {
+    border: 1px solid #CCC;
+    margin-left: 20px;
+    margin-right: 20px;
+    height: 80px;
+    width: calc(100% - 40px);
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -40px);
+    background-color: #FFF;
+    overflow: hidden
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div {
+    position: relative;
+    height: 39px;
+    width: 100%
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div:first-child {
+    height: 40px
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div:not(:last-child),
+#play-off-cross .cruces-eliminatoria .caja-participantes>div:only-child {
+    border-bottom: 1px solid #CCC
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div>img {
+    margin-left: 5px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%)
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div>a {
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    right: 40px;
+    transform: translate(0, -50%);
+    overflow: hidden;
+    text-overflow: ellipsis
+}
+#play-off-cross .cruces-eliminatoria .caja-participantes>div>span {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(0, -50%);
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    width: 40px;
+    font-size: 20px;
+    line-height: 20px
+}
+#play-off-cross .cruces-eliminatoria .ganador {
+    background-color: #f8f8f8
+}
+#play-off-cross .cruces-eliminatoria .ganador>a {
+    font-weight: 700
+}
+#play-off-cross .cruces-eliminatoria .equipo-cruce.hover {
+    background-color: #fbfbfb
+}
+#play-off-cross .cruces-eliminatoria>div:last-child {
+    position: absolute;
+    width: 100%
+}
