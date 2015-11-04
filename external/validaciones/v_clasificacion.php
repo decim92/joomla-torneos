@@ -30,6 +30,9 @@
 	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
+	$db_ins->setQuery($query_ins);
+	$db_ins->execute();	
+
 	    endif;
 	elseif (isset($_POST['btnNuevaLig'])):
 		if($_POST['btnNuevaLig']):
@@ -40,11 +43,11 @@
 	    ->insert($db_ins->quoteName('grupo'))
 	    ->columns($db_ins->quoteName($columns))
 	    ->values(implode(',', $values));
+	$db_ins->setQuery($query_ins);
+	$db_ins->execute();		
 	    endif;	    
 	endif;
-	 
-	$db_ins->setQuery($query_ins);
-	$db_ins->execute();					
+	
 	// $_SESSION['correcto'] = 1;
 	// $_SESSION['id_torneo'] = $db_ins->insertid();	
 	}catch(Exception $e){
@@ -58,15 +61,28 @@
 
 		if (isset($_POST['btnAniadirEquipo'])):
 			if ($_POST['btnAniadirEquipo']):
-		$columns = array('id_equipo', 'id_grupo');
-		$values = array($_POST['aEquipo'], $_POST['idGrupo']);
-		 
-		$query_ins_equi_g
-		    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
-		    ->columns($db_ins_equi_g->quoteName($columns))
-		    ->values(implode(',', $values));
-		$db_ins_equi_g->setQuery($query_ins_equi_g);
-		$db_ins_equi_g->execute();		
+				if($_POST['aEquipo'] != 0):
+					if($_POST['tipo_grupo'] == 1):	
+						$columns = array('id_equipo', 'id_grupo');
+						$values = array($_POST['aEquipo'], $_POST['idGrupo']);
+					else:
+						if($_POST['tipo_grupo'] == 0 && $_POST['aEquipo'] != null):
+							$columns = array('id_equipo', 'id_grupo', 'orden');
+							$values = array($_POST['aEquipo'], $_POST['idGrupo'], $_POST['orden']);
+						else:
+							$_SESSION['campos vacios'] = 1;
+						endif;
+					endif;
+						 
+						$query_ins_equi_g
+						    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
+						    ->columns($db_ins_equi_g->quoteName($columns))
+						    ->values(implode(',', $values));
+						$db_ins_equi_g->setQuery($query_ins_equi_g);
+						$db_ins_equi_g->execute();		
+				else:
+				$_SESSION['campos vacios'] = 1;
+				endif;
 			endif;
 		endif;	
 	

@@ -1,7 +1,38 @@
   
 <!-- <div> -->
 <!-- <a href="equipos.php" role="button" class="btn btn-large btn-primary" data-toggle="modal" data-target="#myModal">Launch Demo Modal</a> -->
- 
+<?php
+  session_start();
+
+  if(isset($_GET['id_equipo'])):
+      header('Location: ficha_equipo.php?id_equipo='.$_GET['id_equipo']);     
+      echo "hola";
+  endif;
+  include "conexion.php";
+?>
+<style>
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+
+
+}
+</style>
  <div id="modalCrearEquipo" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -11,18 +42,52 @@
                 <h4 class="modal-title">CREAR EQUIPO</h4>
             </div>
             <div class="modal-body">
-            <div id="cr_equipo">
+            
             <div class=" container">
-
-            <form action="validaciones/v_equipo.php" class="form-inline" role="form" name="equipo" id="equipo" method="post" target="_parent">
+          <div class="col-sm-5 col-sm-offset-1">
+            <form action="validaciones/v_equipo.php" class="form" role="form" name="equipo" id="equipo" method="post" target="_parent" enctype="multipart/form-data">
 			  <div class="form-group" id="divNombreEquipo">
-			  <label for="nombreEquipo" class="control-label">NOMBRE EQUIPO:</label> 			    
+			  <label for="nombreEquipo" class="control-label">NOMBRE EQUIPO *</label> 			    
 			    <input type="text" class="form-control" id="nombreEquipo" name="nombreEquipo">
 			  </div>
+        <div class="form-group">
+        <label for="pac-input" class="control-label">UBICACIÓN</label>           
+          <input id='pac-input' name='pac-input' class='form-control' type='text' placeholder='Ingrese Ubicacion'>
+        </div>          
+        <div class="form-group">
+        <label for="color1Equipo" class="control-label">EQUIPACION 1 </label>           
+        <div class="row">
+        <div class="col-sm-6 pull-right">
+          <input type='color' class="form-control" name='color11Equipo' />
+        </div>
+        <div class="col-sm-6 pull-right">
+          <input type='color' class="form-control" name='color1Equipo' />          
+        </div>
+        </div>
+        </div>
+        <div class="form-group">
+        <label for="color2Equipo" class="control-label">EQUIPACION 2 </label>           
+          <div class="row">
+        <div class="col-sm-6 pull-right">
+          <input type='color' class="form-control" name='color22Equipo' />
+        </div>
+        <div class="col-sm-6 pull-right">
+          <input type='color' class="form-control" name='color2Equipo' />          
+        </div>
+        </div>
+        </div>
+        <div class="form-group col-sm-8">
+        <!-- <label for="escudo" class="control-label">ESCUDO </label>            -->
+        <span class="btn btn-info btn-file">
+         ELEGIR ESCUDO <input type="file"  name="escudo" id="escudo"> 
+        </span>
+        </div>
+
 			  
-			  <input type="submit" class="btn btn-default" name="btnCrearEquipo" id="btnCrearEquipo" value="CREAR"></input>
+			  <input type="submit" class="btn btn-success" name="btnCrearEquipo" id="btnCrearEquipo" value="CREAR"></input>
 			</form>
       </div>
+      
 			</div>
 			</div>
         </div>
@@ -30,10 +95,10 @@
 </div>
 <!-- </div> -->
 
-  
   <!DOCTYPE html>
   <html lang="en">
   <head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   	<meta charset="UTF-8">
   	<title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
@@ -43,7 +108,9 @@
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 <script src='js/spectrum.js'></script>
 <link rel="stylesheet" href="css/spectrum.css">
+
 </head>
+<script type="text/javascript" src="js/automapa.js"></script>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
   <body>
 
@@ -75,23 +142,6 @@ $(document).ready(function() {
 })
 // ]]></script>
  
-<?php 
-  	session_start();
-	include "conexion.php";
-	if(isset($_SESSION['id_torneo'])):
-		$db_jet = & JDatabase::getInstance( $option );
-		$query_jet = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo, color1, color2 	
-		FROM equipo, jugador_equipo_t 	
-		WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo'];	
-		$db_jet->setQuery($query_jet);
-		$db_jet->execute();
-		$numRows_jet = $db_jet->getNumRows();	
-		$results_jet = $db_jet->loadObjectList();
-	else:
-		echo "<p>WTF</p>";
-	endif;
-	
-?>
   	<nav class="navbar navbar-default" role="navigation">
   <!-- El logotipo y el icono que despliega el menú se agrupan
        para mostrarlos mejor en los dispositivos móviles -->
@@ -110,44 +160,21 @@ $(document).ready(function() {
        otro elemento que se pueda ocultar al minimizar la barra -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          EQUIPOS <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#modalCrearEquipo" data-toggle="modal" data-backdrop="static">CREAR EQUIPO</a></li>
-          <li class="divider"></li>
-          <li><a href="#">IMPORTAR EXISTENTE</a></li>          
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          JUGADORES <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">AÑADIR JUGADOR</a></li>
-          <li class="divider"></li>
-          <li><a href="#">IMPORTAR EXISTENTE</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          PARTICIPANTES <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">AÑADIR PARTICIPANTE</a></li>
-          <li class="divider"></li>
-          <li><a href="#">IMPORTAR EXISTENTE</a></li>
-        </ul>
-      </li>
+      <li><a href="#modalCrearEquipo" data-toggle="modal" data-backdrop="static">CREAR EQUIPO</a></li>
     </ul>
- 
-    <form class="navbar-form navbar-right" role="search">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Buscar">
+    <div style='margin-top:2px;'>
+    <form class="navbar-form navbar-right" role="search" method="post" action="">
+      <div class="input-group input-group-sm">
+      <input type="text" class="form-control" placeholder="Buscar Equipo" name = "txtBEquipo">
+      <span class="input-group-btn">
+
+      <button type="submit" name='btnBuscarEquipo' class="btn btn-default"><span class="glyphicon glyphicon-search "></span></button>
+      </span>
+        
       </div>
-      <button type="submit" class="btn btn-default">Enviar</button>
+      
     </form>
+    </div>
   </div>  
 </nav>
 
@@ -162,8 +189,9 @@ $(document).ready(function() {
   <table class="table table-hover">
   <thead>
     <tr>
-      <th>ID</th>
+      <th>ESCUDO</th>
       <th>NOMBRE</th>
+      <th>UBICACIÓN</th>
       <th>EQUIPACION 1</th>
       <th>EQUIPACION 2</th>
     </tr>
@@ -171,41 +199,95 @@ $(document).ready(function() {
   <tbody data-link="row" class="rowlink">
 
   <?php
-		for($i = 0; $i<$numRows_jet; $i++):
-			$id_e = $results_jet[$i]->this_id_equipo;
-			//$descripcion = $results[$i]->descripcion;
-			echo "			
-		<tr>
-			<td>
-				".$results_jet[$i]->this_id_equipo."		
-			</td>
-			<td>
-				<a href='ficha_equipo.php' title='Editar'>
-				".$results_jet[$i]->nombre_equipo."
-				</a>
-			</td>			
-      <td>
-        <input type='text' class='disabled' size='1' style='background-color: ".$results_jet[$i]->color1.";'>
-        ".$results_jet[$i]->color1."    
-      </td>
-      <td>
-        ".$results_jet[$i]->color2."
-        </a>
-      </td>     
-		</tr>
-		";  			
-  		endfor;  			 
+
+  try{
+    $db_jet = & JDatabase::getInstance( $option );
+    if(isset($_POST['btnBuscarEquipo'])):
+      
+
+        $query_jet = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo, color1, color2, ubicacion  
+        FROM equipo, jugador_equipo_t   
+        WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo']. " AND equipo.nombre LIKE '%".$_POST['txtBEquipo']."%'";        
+
+    else:
+      $query_jet = "SELECT DISTINCT (equipo.id_equipo) as this_id_equipo, equipo.nombre as nombre_equipo, color1, color2, ubicacion 
+      FROM equipo, jugador_equipo_t   
+      WHERE equipo.id_equipo = jugador_equipo_t.id_equipo and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo']; 
+      
+    endif;
+
+      $db_jet->setQuery($query_jet);
+      $db_jet->execute();
+      $numRows_jet = $db_jet->getNumRows(); 
+      $results_jet = $db_jet->loadObjectList();    
+        
+
+
+  }catch(Exception $e){
+    echo $e;
+  }
+
+      for($i = 0; $i<$numRows_jet; $i++):
+        $id_e = $results_jet[$i]->this_id_equipo;
+      if(!is_null($results_jet[$i]->color1)):
+      $array_color1= $results_jet[$i]->color1;
+      $color1_explode = explode('|', $array_color1);
+      $color11= $color1_explode[0];
+      $color12= $color1_explode[1];
+
+      $array_color2= $results_jet[$i]->color2;
+      $color2_explode = explode('|', $array_color2);
+      $color21= $color2_explode[0];
+      $color22= $color2_explode[1];
+      endif;
+        //$descripcion = $results[$i]->descripcion;
+        echo "      
+      <tr>";
+      if(file_exists("img/escudos/".$results_jet[$i]->this_id_equipo.".png")):
+      echo"
+        <td>
+          <img src='img/escudos/".$results_jet[$i]->this_id_equipo.".png' height='24px' width='24px'>   
+        </td>";
+      else:
+        echo"
+        <td>
+          <img src='img/escudos/base.png' height='24px' width='24px'>   
+        </td>";
+      endif;
+      echo "
+        <td>
+          <a href='ficha_equipo.php?id_equipo=".$results_jet[$i]->this_id_equipo."' title='Editar'>
+          ".$results_jet[$i]->nombre_equipo."
+          </a>
+        </td>     
+        <td>
+          <a href='ficha_equipo.php?id_equipo=".$results_jet[$i]->this_id_equipo."' title='Editar'>
+          ".$results_jet[$i]->ubicacion."
+          </a>
+        </td>     
+        <td>
+          <input type='text' class='disabled' size='1' style='border-radius: 5px; border: none; background-color: ".$color11.";'>
+          <input type='text' class='disabled' size='1' style='border-radius: 5px; border: none; background-color: ".$color12.";'>
+        </td>
+        <td>
+          <input type='text' class='disabled' size='1' style='border-radius: 5px; border: none; background-color: ".$color21.";'>
+          <input type='text' class='disabled' size='1' style='border-radius: 5px; border: none; background-color: ".$color22.";'>
+          </a>
+        </td>     
+      </tr>
+      ";        
+        endfor;        
+		
   	else:
   		echo "WTF";
   	endif;
 	?>		
 	</tbody>
 	</table>
-  <input type="text" class="disabled" size="1" style="background-color: black;">
-  <input type='color' name='color' />
-<input type='color' name='color2' value='#3355cc' />
-
+  <div id="map"></div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDow8Qmh2-GzKZY1CZ-NXsC7vL89-qYrVs&signed_in=true&libraries=places&callback=initMap"
+        async defer></script>
 <script src="js/jasny-bootstrap.min.js"></script>
   </body>
   </html>

@@ -255,7 +255,7 @@
 					</div>
 					<div class="col-sm-12">
 						<div class="form-group">
-							<label class="control-laber" for="direccion">UBICACIÓN	</label>
+							<label class="control-label" for="direccion">UBICACIÓN	</label>
 							<?php
 								if(isset($_SESSION['correcto'])):		
 								if($_SESSION['correcto'] == 1):
@@ -334,6 +334,7 @@
 					<form action="validaciones/v_eliminar_t.php" id="eliminar_torneo" name="eliminar_torneo" method="post" role="form" target="_parent">
 						<input  type="submit" class="btn-danger btn btn-sm pull-right" name="btn_ocultar_torneo" id="btn_ocultar_torneo" value="ELIMINAR TORNEO">
 					</form>
+
 					<?php
 					if(isset($_SESSION['torneo_actualizado'])):
 						if($_SESSION['torneo_actualizado'] == 1):

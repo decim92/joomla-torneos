@@ -13,14 +13,7 @@
 		include"conexion.php";
 	 ?>
 <body>
-	<form  action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="form_busqueda" role"form" >
-		<div class="class=form-group col-sm-10 col-xs-10">
-            <input type="text" class="form-control" id="buscar" name="buscara" form="form_busqueda">
-		</div>
-        <div class="form-group col-sm-3">
-            <label> </label>
-            <input type="submit" class="btn btn-primary btn-block btn-lg" value="BUSCAR" id="btnBuscar" name="btnBuscar">  
-        </div>	</form>
+
 	<?php 
   $db_consulta= & JDatabase::getInstance( $option );
             $user = JFactory::getUser();
@@ -46,7 +39,24 @@
             $results_buscar = $db_consulta->loadObjectList(); // carga array de los resultados
         }
     ?>
-    <table class="table table-default">
+
+  <div style="margin-top: 20px;" class='panel panel-primary'>
+  
+<div class="panel-heading">TORNEOS PUBLICADOS</div>
+<div class="panel-body">
+
+<div style="margin-bottom: 16px; margin-right: 100px;" class="col-sm-5 pull-right">
+  <form  action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="form_busqueda" role"search" >
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control" placeholder="Buscar Torneo" name = "buscara">
+      <span class="input-group-btn">
+        <button type="submit" name='btnBuscar' class="btn btn-primary"><span class="glyphicon glyphicon-search "></span></button>
+      </span>
+      </div>
+  </form>
+  </div>
+<div class="col-sm-10 col-sm-offset-1"> 
+    <table class="table table-striped ">
     	<tr>
             <thead>
                <th>NOMBRE TORNEO</th>
@@ -65,6 +75,9 @@
     		endfor;    	
     	?>
     </table>	
+</div>
+  </div>
+  </div>
 </body>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script src="js/jasny-bootstrap.min.js"></script>

@@ -61,6 +61,7 @@ RewriteRule .* index.php [F]
 
 ##Custom
 Rewriterule ^definir-tor/([0-9]+) index.php/definir-tor?id_torneo=$1
+Rewriterule ^equipos/([0-9]+) equipos?id_equipo=$1
 
 
 ## Begin - Joomla! core SEF Section.

@@ -26,24 +26,6 @@
 		$numRows_all_g = $db_all_g->getNumRows();	
 		$results_all_g = $db_all_g->loadObjectList();
 
-    $db_e = & JDatabase::getInstance( $option );
-    $query_e = "SELECT *
-    FROM grupo
-    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 0";  
-    $db_e->setQuery($query_e);
-    $db_e->execute();
-    $numRows_e = $db_e->getNumRows(); 
-    $results_e = $db_e->loadObjectList();
-
-    $db_l = & JDatabase::getInstance( $option );
-    $query_l = "SELECT *
-    FROM grupo
-    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 1";  
-    $db_l->setQuery($query_l);
-    $db_l->execute();
-    $numRows_l = $db_l->getNumRows(); 
-    $results_l = $db_l->loadObjectList();
-
     $db_tabla_grupo = & JDatabase::getInstance( $option );
     $db_equi_no_g = & JDatabase::getInstance( $option );
 	else:
@@ -119,7 +101,7 @@
       echo "'>
     <div class='btn-toolbar pull-right' role='toolbar' aria-label='Toolbar with button groups'>
       <div class='btn-group'>
-      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO A LIGA</a>      
+      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO</a>      
       </div>
       <div class='btn-group'>
       <div class='dropdown'>
@@ -180,7 +162,15 @@
       <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO A LIGA</a>      
       </div>
       <div class='btn-group'>
-      <a href='#config".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'>CONFIGURAR LIGA</a>
+       <div class='dropdown'>
+        <button class='btn btn-primary dropdown-toggle btn-sm' type='button' data-toggle='dropdown'>CONFIGURAR ELIMINATORIA
+        <span class='caret'></span></button>
+        <ul class='dropdown-menu' style='right: 0; left: auto; top: 27px;'>
+          <li><a href='#config".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'>CAMBIAR NOMBRE</a></li>    
+          <li><a href='#eliminarG".$results_all_g[$i]->id_grupo."' role='button' data-toggle='modal' data-backdrop='static'><span class='glyphicon glyphicon-trash'></span> ELIMINAR</a></li>
+        </ul>
+      </div>
+      
       </div>
     </div> 
       
@@ -276,7 +266,16 @@
       <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div> -->
   </div>
-
+  <?php
+          if(isset($_SESSION['campos_vacios'])):
+            if($_SESSION['campos_vacios'] == 1):
+              echo "
+              <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'CAMPO', message : 'Vacío'});</script>
+            ";
+            unset($_SESSION['campos_vacios']);
+            endif;
+          endif;
+  ?>
 <div id="result"></div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </body>
@@ -298,11 +297,16 @@
                 <h4 class='modal-title'>AÑADIR EQUIPO</h4>
             </div>
             <div class='modal-body'>
-            <div id='cr_equipo'>
+            <div>
             <div class='container'>
         <form action='validaciones/v_clasificacion.php' role='form' name='anadirEquipo' id='anadirEquipo".$results_all_g[$i]->id_grupo."' method='post' target='_parent'>
             <input type='hidden' name ='idGrupo' value='".$results_all_g[$i]->id_grupo."'>
-        <div class='form-group col-sm-5'>
+            <input type='hidden' name ='tipo_grupo' value='".$results_all_g[$i]->tipo_grupo."'>
+        <div class='form-group col-sm-4 ";
+        if($results_all_g[$i]->tipo_grupo == 1):
+        echo "col-sm-offset-1";
+        endif;
+        echo"'>
         <label for='aEquipo' class='control-label'>EQUIPO:</label>          
         <select class='form-control' name='aEquipo' id='aEquipo'>
         <option value='0'>-</option>
@@ -320,8 +324,14 @@
         endfor;      
       echo"
         </select>
-        </div>        
-        <div class='col-sm-12 col-sm-offset-1'>
+        </div>";
+        if($results_all_g[$i]->tipo_grupo == 0):
+        echo "<div class='form-group col-sm-2'>
+          <label for='aEquipo' class='control-label'>ORDEN:</label> 
+          <input type='number' min='1' max='33' id='orden' name='orden' class='form-control'>
+        </div>";
+        endif;
+        echo "<div class='col-sm-12 col-sm-offset-1'>
         <input type='submit' class='btn btn-success' name='btnAniadirEquipo' id='btnAniadirEquipo' value='ACEPTAR'></input>
         <input type='button' class='btn btn-default' data-dismiss='modal' value='CANCELAR'></input>
         </div>

@@ -101,11 +101,12 @@
 <!-- </div> -->
 <ol class="breadcrumb">
   <li><a href="equipos.php">EQUIPO</a></li>
-  <li><a href="ficha_equipo.php">NOMBRE EQUIPO</a></li>
+  <li><a href="ficha_equipo.php"><?php echo?></a></li>
   <li class="active">JUGADOR</li>
 </ol>
 
-<h2>FICHA JUGADOR</h2>
+<h2>NOMBRE</h2>
+<h2>EQUIPO</h2>
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#info_jugador">INFORMACIÓN</a></li>
   </ul>

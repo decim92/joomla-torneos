@@ -79,8 +79,9 @@ CREATE TABLE `equipo` (
   `color1` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL,
   `color2` varchar(50) COLLATE latin1_spanish_ci DEFAULT NULL,
   `id_usuario` int(11) NOT NULL,
+  `ubicacion` varchar(250) COLLATE latin1_spanish_ci NOT NULL,
   PRIMARY KEY (`id_equipo`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,29 +90,30 @@ CREATE TABLE `equipo` (
 
 LOCK TABLES `equipo` WRITE;
 /*!40000 ALTER TABLE `equipo` DISABLE KEYS */;
-INSERT INTO `equipo` VALUES (1,'Ferias F.C','-16777012','-16711936',410);
-INSERT INTO `equipo` VALUES (2,'Los Alpes F.C','-16777012','-16711936',410);
-INSERT INTO `equipo` VALUES (3,'Pitalito F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (4,'Laureles F.C','-16764007','-16711936',410);
-INSERT INTO `equipo` VALUES (5,'Villa Esperanza F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (6,'Centro Dorda F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (7,'Guarino F.C','-16776961','-65434',410);
-INSERT INTO `equipo` VALUES (8,'Andes F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (9,'Buenos Aires F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (10,'Sara Lopez F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (11,'Margarita F.C','-39169','-16764109',410);
-INSERT INTO `equipo` VALUES (12,'Ecopetrol F.C','-10092442','-16711936',410);
-INSERT INTO `equipo` VALUES (13,'Puerto salgar F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (14,'Colorados F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (15,'Cedrales F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (16,'San Javier F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (17,'Purnio F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (18,'Palmareal F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (19,'Tropicana F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (20,'Bocana F.C','-16711936','-16711936',410);
-INSERT INTO `equipo` VALUES (21,'mas_test','fff700','naranja/negro',410);
-INSERT INTO `equipo` VALUES (24,'ffffff',NULL,NULL,410);
-INSERT INTO `equipo` VALUES (25,'prueba con idu',NULL,NULL,410);
+INSERT INTO `equipo` VALUES (1,'Ferias F.C','#5f5d18|#c82c2c','#25208d|#000000',410,'Japón');
+INSERT INTO `equipo` VALUES (2,'Los Alpes F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (3,'Pitalito F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (4,'Laureles F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (5,'Villa Esperanza F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (6,'Centro Dorda F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (7,'Guarino F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (8,'Andes F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (9,'Buenos Aires F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (10,'Sara Lopez F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (11,'Margarita F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (12,'Ecopetrol F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (13,'Puerto salgar F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (14,'Colorados F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (15,'Cedrales F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (16,'San Javier F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (17,'Purnio F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (18,'Palmareal F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (19,'Tropicana F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (20,'Bocana F.C','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (21,'Pecheros','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (24,'Petrol','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (25,'Instituto Alegria','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (26,'(libre)','fff700|000000','fff700|000000',0,'');
 /*!40000 ALTER TABLE `equipo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +131,7 @@ CREATE TABLE `equipo_grupo` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `orden` int(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,6 +146,10 @@ INSERT INTO `equipo_grupo` VALUES (3,20,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (4,21,1,1,0);
 INSERT INTO `equipo_grupo` VALUES (5,21,5,1,0);
 INSERT INTO `equipo_grupo` VALUES (6,20,5,1,0);
+INSERT INTO `equipo_grupo` VALUES (7,21,2,1,1);
+INSERT INTO `equipo_grupo` VALUES (9,24,2,1,2);
+INSERT INTO `equipo_grupo` VALUES (10,20,2,1,3);
+INSERT INTO `equipo_grupo` VALUES (11,25,2,1,4);
 /*!40000 ALTER TABLE `equipo_grupo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,7 +179,6 @@ LOCK TABLES `grupo` WRITE;
 /*!40000 ALTER TABLE `grupo` DISABLE KEYS */;
 INSERT INTO `grupo` VALUES (1,'Liga 1',1,1,1,0);
 INSERT INTO `grupo` VALUES (2,'Eliminatoria 1',0,1,1,0);
-INSERT INTO `grupo` VALUES (4,'Eliminatoria 2',0,1,0,0);
 INSERT INTO `grupo` VALUES (5,'Liga 2',1,1,0,0);
 /*!40000 ALTER TABLE `grupo` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -191,7 +196,7 @@ CREATE TABLE `jornada` (
   `id_grupo` int(11) NOT NULL,
   `numero` int(3) NOT NULL,
   PRIMARY KEY (`id_jornada`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,6 +209,8 @@ INSERT INTO `jornada` VALUES (14,'Jornada 1',1,1);
 INSERT INTO `jornada` VALUES (15,'Jornada 2',1,2);
 INSERT INTO `jornada` VALUES (16,'Jornada 3',1,3);
 INSERT INTO `jornada` VALUES (17,'Jornada 1',5,1);
+INSERT INTO `jornada` VALUES (20,'Final',2,1);
+INSERT INTO `jornada` VALUES (21,'Semifinal',2,2);
 /*!40000 ALTER TABLE `jornada` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -699,7 +706,7 @@ CREATE TABLE `jugador_equipo_t` (
   CONSTRAINT `FK_JT_EQUIP` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id_equipo`),
   CONSTRAINT `FK_JT_TORNE` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`),
   CONSTRAINT `jugador_equipo_t_ibfk_1` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -713,6 +720,11 @@ INSERT INTO `jugador_equipo_t` VALUES (2,NULL,20,1);
 INSERT INTO `jugador_equipo_t` VALUES (4,1,21,1);
 INSERT INTO `jugador_equipo_t` VALUES (7,NULL,24,1);
 INSERT INTO `jugador_equipo_t` VALUES (8,NULL,25,1);
+INSERT INTO `jugador_equipo_t` VALUES (50,NULL,1,1);
+INSERT INTO `jugador_equipo_t` VALUES (51,NULL,2,1);
+INSERT INTO `jugador_equipo_t` VALUES (52,NULL,18,1);
+INSERT INTO `jugador_equipo_t` VALUES (53,NULL,3,1);
+INSERT INTO `jugador_equipo_t` VALUES (54,NULL,4,1);
 /*!40000 ALTER TABLE `jugador_equipo_t` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -788,7 +800,7 @@ CREATE TABLE `partido` (
   PRIMARY KEY (`id_partido`),
   KEY `id_torneo` (`id_torneo`),
   CONSTRAINT `FK_PARTI_TORNEO` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -804,6 +816,9 @@ INSERT INTO `partido` VALUES (42,NULL,NULL,1,'',NULL,NULL,15,0,0);
 INSERT INTO `partido` VALUES (43,NULL,NULL,1,'',NULL,NULL,16,0,0);
 INSERT INTO `partido` VALUES (44,NULL,NULL,1,'',NULL,NULL,16,0,0);
 INSERT INTO `partido` VALUES (45,NULL,NULL,1,'',NULL,NULL,17,0,0);
+INSERT INTO `partido` VALUES (49,NULL,NULL,1,'',NULL,NULL,20,0,0);
+INSERT INTO `partido` VALUES (50,NULL,NULL,1,'',NULL,NULL,21,0,0);
+INSERT INTO `partido` VALUES (51,NULL,NULL,1,'',NULL,NULL,21,0,0);
 /*!40000 ALTER TABLE `partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -822,7 +837,7 @@ CREATE TABLE `partido_equipos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_partido` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -838,6 +853,9 @@ INSERT INTO `partido_equipos` VALUES (20,21,0,0,22,42);
 INSERT INTO `partido_equipos` VALUES (24,20,0,0,23,43);
 INSERT INTO `partido_equipos` VALUES (21,25,0,0,24,44);
 INSERT INTO `partido_equipos` VALUES (21,20,0,0,25,45);
+INSERT INTO `partido_equipos` VALUES (26,26,0,0,29,49);
+INSERT INTO `partido_equipos` VALUES (21,24,0,0,30,50);
+INSERT INTO `partido_equipos` VALUES (20,25,0,0,31,51);
 /*!40000 ALTER TABLE `partido_equipos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -901,7 +919,7 @@ CREATE TABLE `torneo` (
 
 LOCK TABLES `torneo` WRITE;
 /*!40000 ALTER TABLE `torneo` DISABLE KEYS */;
-INSERT INTO `torneo` VALUES (1,'Liga Coreducacion Plus',3,410,1,0,0,3,1,'La Dorada, Caldas, Colombia',1);
+INSERT INTO `torneo` VALUES (1,'Liga Coreducacion Plus',3,410,1,1,0,3,1,'La Dorada, Caldas, Colombia',1);
 /*!40000 ALTER TABLE `torneo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -914,4 +932,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-02  0:29:55
+-- Dump completed on 2015-11-04  1:31:48
