@@ -149,6 +149,8 @@
 					        $descr_jor = $nombre_jornadas[$i];
 					    case 4:
 					        $descr_jor = $nombre_jornadas[$i];
+					    case 5:
+					        $descr_jor = $nombre_jornadas[$i];
 					endswitch;					
 				else:
 					switch ($i):
@@ -160,8 +162,10 @@
 					        $descr_jor = $nombre_jornadas[$i];
 					    case 3:
 					        $descr_jor = $nombre_jornadas[$i];
-					    default:
-					        $descr_jor = $nombre_jornadas[5];
+					    case 4:
+					        $descr_jor = $nombre_jornadas[$i];
+					    case 5:
+					        $descr_jor = $nombre_jornadas[$i];
 					endswitch;							
 				endif;			
 

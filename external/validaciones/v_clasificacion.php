@@ -153,6 +153,19 @@
 
 	$query_eliminar_g = $db_eliminar_g->getQuery(true);
 
+	$query_eliminar_g->delete($db_eliminar_g->quoteName('equipo_grupo')) 
+		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
+       ->where(array($db_eliminar_g->quoteName('id_equipo') . ' IN 
+       	(SELECT id_e FROM 
+       		(SELECT equipo_grupo.id_equipo AS id_e 
+       			FROM equipo_grupo, grupo 
+       			WHERE grupo.id_grupo = equipo_grupo.id_grupo and grupo.id_grupo = '.$_POST['idGrupo'].')AS j)' )); 
+	
+	$db_eliminar_g->setQuery($query_eliminar_g);
+	$db_eliminar_g->execute();		
+
+	$query_eliminar_g = $db_eliminar_g->getQuery(true);
+
 	$query_eliminar_g->delete($db_eliminar_g->quoteName('grupo')) 
 		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
        ->where(array($db_eliminar_g->quoteName('id_grupo') . ' = '.$_POST['idGrupo'])); 

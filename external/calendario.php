@@ -151,7 +151,7 @@ $(document).ready(function(){
       </tr>
       </thead>
       <tbody data-link='row' class='rowlink'>"; 
-          try{
+          try{        
               if(isset($_SESSION['id_jornada'])):
                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo 
@@ -233,7 +233,7 @@ $(document).ready(function(){
       <option value='0'>Mostrar Partidos</option>
       ";
         for ($n = $numRows_combo_jornadas-1; $n >= 0; $n--):
-
+          echo $_SESSION['id_jornada'];
           echo "<option value='".$results_combo_jornadas[$n]->id_jor."' ";
         if(isset($_SESSION['id_jornada'])):
           echo $_SESSION['id_jornada'];
@@ -274,7 +274,6 @@ $(document).ready(function(){
       </tr>
       </thead>
       <tbody data-link='row' class='rowlink'>"; 
-
         try{
           if($numRows_combo_jornadas != 0):
               if(isset($_SESSION['id_jornada'])):
@@ -290,13 +289,13 @@ $(document).ready(function(){
                
                 $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
-                WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[$numRows_combo_jornadas-1]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+                WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
                 $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
-                WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[$numRows_combo_jornadas-1]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+                WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
               endif;
-              unset($_SESSION['id_jornada']);
+              // unset($_SESSION['id_jornada']);
 
              
               
@@ -452,6 +451,15 @@ endif;
       <script type='text/javascript'>$.toaster({ priority : 'success', title : 'PARTIDO', message : 'Listo'});</script>
     ";
     unset($_SESSION['partido_a']);
+    endif;
+  endif;
+
+  if(isset($_SESSION['no_empate'])):
+    if($_SESSION['no_empate'] == 1):
+      echo "
+      <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'PARTIDO', message : 'No puede empatarse'});</script>
+    ";
+    unset($_SESSION['no_empate']);
     endif;
   endif;
     ?>

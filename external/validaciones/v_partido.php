@@ -11,22 +11,55 @@
 					$db_act_p = & JDatabase::getInstance( $option );
 					//Actualizar resultados
 
-					$query_act_p = $db_act_p->getQuery(true);
+					$db_tg = & JDatabase::getInstance( $option );
+				    $query_tg = "SELECT grupo.tipo_grupo as tipo_g 
+				    FROM grupo 
+				    WHERE id_grupo = (SELECT grupo.id_grupo as id_g FROM grupo, jornada, partido WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND partido.id_partido = ".$_POST['id_partido'].")"; 
+				    $db_tg->setQuery($query_tg);
+				    $db_tg->execute();
+				    $results_tg = $db_tg->loadObjectList();
 
-					$fields = array(
-						$db_act_p->quoteName('tantos1') . ' = ' . $db_act_p->quote($_POST['tantos1']),
-						$db_act_p->quoteName('tantos2') . ' = ' . $db_act_p->quote($_POST['tantos2'])						
-						);
-					$conditions = array(
-						$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
-						);
-					 
-					$query_act_p
-					    ->update($db_act_p->quoteName('partido_equipos'))
-					    ->set($fields)
-					    ->where($conditions);
-					$db_act_p->setQuery($query_act_p);
-					$db_act_p->execute();	
+				    if($results_tg[0]->tipo_g == 0):
+				    	if($_POST['tantos1'] != $_POST['tantos2']):
+				    		$query_act_p = $db_act_p->getQuery(true);
+
+							$fields = array(
+								$db_act_p->quoteName('tantos1') . ' = ' . $db_act_p->quote($_POST['tantos1']),
+								$db_act_p->quoteName('tantos2') . ' = ' . $db_act_p->quote($_POST['tantos2'])						
+								);
+							$conditions = array(
+								$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+								);
+							 
+							$query_act_p
+							    ->update($db_act_p->quoteName('partido_equipos'))
+							    ->set($fields)
+							    ->where($conditions);
+							$db_act_p->setQuery($query_act_p);
+							$db_act_p->execute();
+						else:
+							$_SESSION['no_empate'] = 1;
+				    	endif;
+				   	else:
+				   		$query_act_p = $db_act_p->getQuery(true);
+
+						$fields = array(
+							$db_act_p->quoteName('tantos1') . ' = ' . $db_act_p->quote($_POST['tantos1']),
+							$db_act_p->quoteName('tantos2') . ' = ' . $db_act_p->quote($_POST['tantos2'])						
+							);
+						$conditions = array(
+							$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+							);
+						 
+						$query_act_p
+						    ->update($db_act_p->quoteName('partido_equipos'))
+						    ->set($fields)
+						    ->where($conditions);
+						$db_act_p->setQuery($query_act_p);
+						$db_act_p->execute();	
+				    endif;
+
+					
 //Actualizar estados fechas etc.
 					$query_act_p = $db_act_p->getQuery(true);
 
@@ -77,14 +110,7 @@
 					$db_act_p->setQuery($query_act_p);
 					$db_act_p->execute();
 
-					$db_tg = & JDatabase::getInstance( $option );
-				    $query_tg = "SELECT grupo.tipo_grupo as tipo_g 
-				    FROM grupo 
-				    WHERE id_grupo = (SELECT grupo.id_grupo as id_g FROM grupo, jornada, partido WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND partido.id_partido = ".$_POST['id_partido'].")"; 
-				    $db_tg->setQuery($query_tg);
-				    $db_tg->execute();
-				    $results_tg = $db_tg->loadObjectList();
-
+					
 				    if($results_tg[0]->tipo_g == 1):
 
 				    //Clasificacion ligas
@@ -158,6 +184,7 @@
 									echo $j+0.5. "j+<br> ";
 
 									if($sig_pos == $j && $j % 2 == 0):
+										if($results_ganadores[$j]->id_gana != 0):
 										$fields = array(
 										$db_act_pos->quoteName('id_equipo1') . ' = ' . $results_ganadores[$j]->id_gana										
 										);	
@@ -165,15 +192,17 @@
 									$conditions = array(
 										$db_act_pos->quoteName('id_partido') . ' = ' . $partidos_sig_jor[$sig_pos]. ' AND id_equipo1 = 26'
 										);
-
+										endif;
 									else:
-										$fields = array(
-										$db_act_pos->quoteName('id_equipo2') . ' = ' . $results_ganadores[$j]->id_gana										
-										);	
+										if($results_ganadores[$j]->id_gana != 0):
+											$fields = array(
+											$db_act_pos->quoteName('id_equipo2') . ' = ' . $results_ganadores[$j]->id_gana										
+											);	
 
-									$conditions = array(
-										$db_act_pos->quoteName('id_partido') . ' = ' . $partidos_sig_jor[$sig_pos]. ' AND id_equipo2 = 26'
-										);
+										$conditions = array(
+											$db_act_pos->quoteName('id_partido') . ' = ' . $partidos_sig_jor[$sig_pos]. ' AND id_equipo2 = 26'
+											);
+										endif;										
 
 									endif;
 									
