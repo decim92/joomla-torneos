@@ -220,3 +220,39 @@ table th{
 .modal-backdrop{
     z-index: 10;        
 }​
+
+.dot-primary {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #1d71cc;
+    margin:auto;
+}
+.dot-success {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #40943F;
+    margin:auto;
+}
+.dot-info {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #38a5de;
+    margin:auto;
+}
+.dot-warning {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #f19800;
+    margin:auto;
+}
+.dot-danger {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #df3934;
+    margin:auto;
+}

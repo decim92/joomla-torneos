@@ -1,12 +1,12 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	header('Location: ../../equipos?id_equipo='.$_POST['idAEquipo']);
+ 	header('Location: ../../equipos?id_equipo='.$_POST['idAEquipo'].'&id_ju='.$_POST['id_jugador']);
  	include "../conexion.php";
 
- 	if(isset($_POST['btnAEquipo'])):
+ 	if(isset($_POST['btnAJugador'])):
 		if($_POST['btnAEquipo']):
-			if($_POST['a_nombre_equipo'] != ""):
+			if($_POST['a_nombre_equipo'] != "" && $_POST['pac-input'] != ""):
 
 			$color1sin = str_replace('#', '', $_POST['color1Equipo']);
 			$color11sin = str_replace('#', '', $_POST['color11Equipo']);
@@ -36,7 +36,7 @@
 			    ->where($conditions);
 			$db_act_equipo->setQuery($query_act_equipo);
 			$db_act_equipo->execute();
-			$_SESSION['equipo_a'] = 1;
+			$_SESSION['jugador_a'] = 1;
 			}
 			catch(Exception $e){
 				echo $e;

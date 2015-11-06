@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jasny-bootstrap.min">
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
@@ -153,19 +153,21 @@ $(document).ready(function(){
       <tbody data-link='row' class='rowlink'>"; 
           try{
               if(isset($_SESSION['id_jornada'])):
-               $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+               $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo 
               WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND  partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
-              $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+              $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo
               WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+
               else:
-                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+
+                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
                 WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
-                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
                 WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[0]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
               endif;
@@ -187,9 +189,17 @@ $(document).ready(function(){
                 
                 echo "<tr>
                 <td>".$results_tabla_partidos1[$j]->nombre_equipo."</td>          
-                <td>-</td>          
-                <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>          
-                </tr>";                 
+                <td><a href='partidos.php?id_partido=".$results_tabla_partidos1[$j]->this_id_p."&id_equipo1=".$results_tabla_partidos1[$j]->id_eq1."&id_equipo2=".$results_tabla_partidos2[$j]->id_eq2."&n_equipo1=".$results_tabla_partidos1[$j]->nombre_equipo."&n_equipo2=".$results_tabla_partidos2[$j]->nombre_equipo."' title='Editar'>".$results_tabla_partidos2[$j]->tantos_1." - ".$results_tabla_partidos2[$j]->tantos_2."</a></td>          
+                <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>   
+                <td>".$results_tabla_partidos2[$j]->fecha_p."</td>          
+                <td>".$results_tabla_partidos2[$j]->hora_p."</td>          
+                <td>".$results_tabla_partidos2[$j]->lugar_p."</td>";
+                if($results_tabla_partidos2[$j]->jugado_p == 0):
+                  echo "<td><div class='dot-warning' title='Pendiente'></div></td>";
+                else:
+                  echo "<td><div class='dot-success' title='Terminado'></div></td>";
+                endif;
+              echo "</tr>";     
               endfor;   
         }catch(Exception $e){
           echo $e;
@@ -268,21 +278,21 @@ $(document).ready(function(){
         try{
           if($numRows_combo_jornadas != 0):
               if(isset($_SESSION['id_jornada'])):
-               $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+               $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo 
               WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND  partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
-              $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+              $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo
               WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$_SESSION['id_jornada']." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
               else:
                
-                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
                 WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[$numRows_combo_jornadas-1]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
 
-                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2, equipo.nombre as nombre_equipo, partido_equipos.id_partido 
+                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
                 FROM partido_equipos, equipo, partido, jornada, grupo
                 WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_combo_jornadas[$numRows_combo_jornadas-1]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
               endif;
@@ -304,9 +314,17 @@ $(document).ready(function(){
                 
                 echo "<tr>
                 <td>".$results_tabla_partidos1[$j]->nombre_equipo."</td>          
-                <td>-</td>          
+                <td><a href='partidos.php?id_partido=".$results_tabla_partidos1[$j]->this_id_p."&id_equipo1=".$results_tabla_partidos1[$j]->id_eq1."&id_equipo2=".$results_tabla_partidos2[$j]->id_eq2."&n_equipo1=".$results_tabla_partidos1[$j]->nombre_equipo."&n_equipo2=".$results_tabla_partidos2[$j]->nombre_equipo."' title='Editar'>".$results_tabla_partidos2[$j]->tantos_1." - ".$results_tabla_partidos2[$j]->tantos_2."</a></td>          
                 <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>          
-                </tr>";                 
+                <td>".$results_tabla_partidos2[$j]->fecha_p."</td>          
+                <td>".$results_tabla_partidos2[$j]->hora_p."</td>          
+                <td>".$results_tabla_partidos2[$j]->lugar_p."</td>";
+                if($results_tabla_partidos2[$j]->jugado_p == 0):
+                  echo "<td><div class='dot-warning' title='Pendiente'></div></td>";
+                else:
+                  echo "<td><div class='dot-success' title='Terminado'></div></td>";
+                endif;
+              echo "</tr>";                 
               endfor;   
 
           else:
@@ -328,42 +346,6 @@ $(document).ready(function(){
    
     <!-- <div id="menu1" class="tab-pane fade">
 
-  barra de navegacion
-
-      <nav class="navbar navbar-default" role="navigation">
-  El logotipo y el icono que despliega el menú se agrupan
-       para mostrarlos mejor en los dispositivos móviles
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse"
-            data-target=".navbar-ex1-collapse">
-      <span class="sr-only">Desplegar navegación</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="#">MiTD</a>
-  </div>
- 
-  Agrupar los enlaces de navegación, los formularios y cualquier
-       otro elemento que se pueda ocultar al minimizar la barra
-  <div class="collapse navbar-collapse navbar-ex1-collapse navbar-right">
-    <ul class="nav navbar-nav">
-    
-
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          PARTICIPANTES <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">AÑADIR PARTICIPANTE</a></li>
-          <li class="divider"></li>
-          <li><a href="#">IMPORTAR EXISTENTE</a></li>
-        </ul>
-      </li>
-    </ul>
-
-  </div>  
-</nav>
 
 
       <h3>Menu 1</h3>
@@ -373,6 +355,7 @@ $(document).ready(function(){
 
 <div id="result"></div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/jasny-bootstrap.min.js"></script>
   </body>
 
 
@@ -462,5 +445,15 @@ endif;
     unset($_SESSION['grupo_exitoso']);
     endif;
   endif;
+
+  if(isset($_SESSION['partido_a'])):
+    if($_SESSION['partido_a'] == 1):
+      echo "
+      <script type='text/javascript'>$.toaster({ priority : 'success', title : 'PARTIDO', message : 'Listo'});</script>
+    ";
+    unset($_SESSION['partido_a']);
+    endif;
+  endif;
     ?>
+
   </html>

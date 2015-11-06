@@ -26,6 +26,24 @@
 		$numRows_all_g = $db_all_g->getNumRows();	
 		$results_all_g = $db_all_g->loadObjectList();
 
+    $db_e = & JDatabase::getInstance( $option );
+    $query_e = "SELECT *
+    FROM grupo
+    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 0 ORDER BY id_grupo"; 
+    $db_e->setQuery($query_e);
+    $db_e->execute();
+    $numRows_e = $db_e->getNumRows(); 
+    $results_e = $db_e->loadObjectList();
+
+    $db_l = & JDatabase::getInstance( $option );
+    $query_l = "SELECT *
+    FROM grupo
+    WHERE id_torneo =".$_SESSION['id_torneo']." AND tipo_grupo = 1 ORDER BY id_grupo"; 
+    $db_l->setQuery($query_l);
+    $db_l->execute();
+    $numRows_l = $db_l->getNumRows(); 
+    $results_l = $db_l->loadObjectList();
+
     $db_tabla_grupo = & JDatabase::getInstance( $option );
     $db_equi_no_g = & JDatabase::getInstance( $option );
 	else:
@@ -159,7 +177,7 @@
       echo "'>
     <div class='btn-toolbar pull-right' role='toolbar' aria-label='Toolbar with button groups'>
       <div class='btn-group'>
-      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO A LIGA</a>      
+      <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO</a>      
       </div>
       <div class='btn-group'>
        <div class='dropdown'>

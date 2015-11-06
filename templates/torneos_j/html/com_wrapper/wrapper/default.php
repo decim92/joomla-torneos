@@ -43,6 +43,7 @@ function iFrameHeight()
 	if (isset($_GET['id_torneo'])) echo "?id_torneo=".$_GET['id_torneo'];
 	if (isset($_GET['descripcion'])) echo "&descripcion=".$_GET['descripcion'];
 	if (isset($_GET['id_equipo'])) echo "?id_equipo=".$_GET['id_equipo'];
+	if (isset($_GET['id_ju'])) echo "&id_ju=".$_GET['id_ju'];
 	?>"
 	width="<?php echo $this->escape($this->params->get('width')); ?>"
 	height="<?php echo $this->escape($this->params->get('height')); ?>"

@@ -82,12 +82,12 @@
 </div>
 <!-- <h2>FICHA EQUIPO</h2> -->
   <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#info_equipo">INFORMACIÓN</a></li>
-    <li><a data-toggle="tab" href="#lista_jugadores">JUGADORES</a></li>
+    <li><a data-toggle="tab" href="#info_equipo">INFORMACIÓN</a></li>
+    <li class="active"><a data-toggle="tab" href="#lista_jugadores">JUGADORES</a></li>
   </ul>
 
   <div class="tab-content">
-    <div id="info_equipo" class="tab-pane fade in active">
+    <div id="info_equipo" class="tab-pane fade">
       <h3>INFORMACIÓN</h3>
       
       <form action="validaciones/v_actualizar_e.php" class="form" role="form" name="equipo" id="equipo" method="post" target="_parent">
@@ -139,24 +139,71 @@
       </form>
 
     </div>
-    <div id="lista_jugadores" class="tab-pane fade">
+    <div id="lista_jugadores" class="tab-pane fade in active">
       <h3>JUGADORES</h3>
+
+        <div class='btn-group pull-right'>
+          <a href='#modalCrearJugador' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AGREGAR JUGADOR</a>      
+        </div>
+
       <table class="table table-hover">
   <thead>
     <tr>
-      <th>P</th>
+      <th>FOTO</th>
       <th>NOMBRES</th>
       <th>APELLIDOS</th>
-      <th>PJ</th>
-      <th>PG</th>
-      <th>PE</th>
-      <th>PP</th>
-      <th>F</th>
-      <th>C</th>
-      <th>D</th>
+      <th>DOCUMENTO</th>
+      <th>F. NACIMIENTO</th>
+      <th>DIRECCIÓN</th>
+      <th>TELEFONO</th>
+      <th>E-MAIL</th>
     </tr>
   </thead>
   <tbody data-link="row" class="rowlink">
+  <?php
+
+    $db_tabla_j = & JDatabase::getInstance( $option );
+    $query_tabla_j = "SELECT  nombres, apellidos, documento, f_nacimiento, direccion, jugador.id_jugador as id_ju, telefono, email
+    FROM jugador_equipo_t, jugador
+    WHERE jugador.id_jugador = jugador_equipo_t.id_jugador and jugador_equipo_t.id_torneo =".$_SESSION['id_torneo']. " AND jugador_equipo_t.id_equipo = ".$results_equipo[0]->this_id_equipo; 
+
+    $db_tabla_j->setQuery($query_tabla_j);
+    $db_tabla_j->execute();
+    $numRows_tabla_j = $db_tabla_j->getNumRows(); 
+    $results_tabla_j = $db_tabla_j->loadObjectList();    
+
+    for ($i=0; $i < $numRows_tabla_j; $i++):
+      echo "
+      <tr>";
+      if(file_exists("img/fotos/".$results_tabla_j[$i]->id_ju.".png")):
+      echo"
+        <td>
+          <img src='img/fotos/".$results_tabla_j[$i]->id_ju.".png' height='24px' width='24px'>   
+        </td>";
+      else:
+        echo"
+        <td>
+          <img src='img/fotos/anonimo.png' height='24px' width='24px'>   
+        </td>";
+      endif;
+
+       echo "<td>
+          <a href='ficha_jugador.php?id_equipo=".$results_equipo[0]->this_id_equipo."&id_jugador=".$results_tabla_j[$i]->id_ju."' title='Editar'>
+          ".$results_tabla_j[$i]->nombres."
+          </a>
+        </td>  
+        <td></td>
+        <td>".$results_tabla_j[$i]->apellidos."</td>
+        <td>".$results_tabla_j[$i]->documento."</td>
+        <td>".$results_tabla_j[$i]->f_nacimiento."</td>
+        <td>".$results_tabla_j[$i]->direccion."</td>
+        <td>".$results_tabla_j[$i]->telefono."</td>
+        <td>".$results_tabla_j[$i]->email."</td>
+      </tr>
+      ";
+    endfor;
+
+  ?>
   </tbody>
   </table>
     </div>
@@ -199,6 +246,100 @@
 
         
         <input type="submit" class="btn btn-success" name="btnAEscudo" id="btnAEscudo" value="ACEPTAR"></input>
+      </form>
+      </div>
+      
+      </div>
+      </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalCrearJugador" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here from "remote.php" file -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">CREAR EQUIPO</h4>
+            </div>
+            <div class="modal-body">
+            
+            <div class=" container">
+          <div class="col-sm-5 col-sm-offset-1">
+            <form action="validaciones/v_jugador.php" class="form" role="form" name="equipo" id="equipo" method="post" target="_parent">
+        <div class="form-group col-sm-12">
+        <label for="nombres" class="control-label">NOMBRES*</label>           
+          <input type="text" class="form-control" id="nombres" name="nombres">
+        </div>
+        <div class="form-group col-sm-12">
+        <label for="apellidos" class="control-label">APELLIDOS*</label>           
+          <input type="text" class="form-control" id="apellidos" name="apellidos" >
+        </div>
+        <div class="form-group col-sm-12">
+        <label for="documento" class="control-label">DOCUMENTO*</label>           
+          <input type="text" class="form-control" id="documento" name="documento" >
+        </div>
+
+        <div class="form-group col-sm-4">
+        <label for="dia" class="control-label">DÍA</label>           
+          <select class="form-control" id="dia" name="dia" >
+            <option value="0">-----</option>
+            <?php 
+            for ($i=1; $i <= 31; $i++):
+              echo "<option value='0".$i."'>".$i."</option>";
+            endfor;              
+            ?>
+          </select>
+        </div>
+        <div class="form-group col-sm-4">
+        <label for="mes" class="control-label">MES</label>           
+          <select class="form-control" id="mes" name="mes" >
+            <option value="0">-----</option>
+            <?php 
+            $meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            for ($i=1; $i <= 12; $i++):
+              echo "<option value='0".$i."'>".$meses[$i]."</option>";
+            endfor;              
+            ?>
+          </select>
+        </div>
+        <div class="form-group col-sm-4">
+        <label for="anio" class="control-label">AÑO</label>           
+          <select class="form-control" id="anio" name="anio" >
+            <option value="0">-----</option>
+            <?php 
+            for ($i=1915; $i <=2015 ; $i++):
+              echo "<option value='0".$i."'>".$i."</option>";
+            endfor;              
+            ?>
+          </select>
+        </div>
+        <div class="form-group col-sm-6">
+        <label for="direccion" class="control-label">DIRECCIÓN*</label>           
+          <input type="text" class="form-control" id="direccion" name="direccion" >
+        </div>
+        <div class="form-group col-sm-6">
+        <label for="telefono" class="control-label">TELÉFONO*</label>           
+          <input type="text" class="form-control" id="telefono" name="telefono" >
+        </div>
+        <div class="form-group col-sm-6">
+        <label for="email" class="control-label">EMAIL*</label>           
+          <input type="email" class="form-control" id="email" name="email" >
+        </div>
+        
+        <input type="hidden" name="id_equi" value="<?php echo $results_equipo[0]->this_id_equipo;?>">
+        <div class="form-group col-sm-6">
+        <!-- <label for="escudo" class="control-label">ESCUDO </label>            -->
+        <label> </label>
+        <span class="btn btn-info btn-file btn-block">
+         ELEGIR FOTO  <input type="file"  name="foto" id="foto"> 
+        </span>
+        </div>
+
+        <div class="col-sm-10 col-sm-offset-1">
+        <input type="submit" class="btn btn-success btn-block" name="btnAgregarJugador" id="btnAgregarJugador" value="ACEPTAR"></input>
+        </div>
       </form>
       </div>
       

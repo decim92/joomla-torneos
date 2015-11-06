@@ -118,7 +118,7 @@
 			$preliminares = $cantidad_equipos - pow(2, floor(log($cantidad_equipos, 2)));
 			$standby = $cantidad_equipos - $preliminares*2;			
 			$partidos_potencia2 = $cantidad_equipos/2;
-			$partidos_ronda2 = $standby + $preliminares;
+			$partidos_ronda2 = ($standby + $preliminares)/2;
 
 			// echo "Equipos:".$cantidad_equipos."<br>";
 			// echo "Partidos:".$cantidad_partidos."<br>";
@@ -132,6 +132,7 @@
 			$equipos_partido = array();
 			$nombre_jornadas = array('Final', 'Semifinal', 'Cuartos de Final', 'Octavos de Final', 'Primera Ronda', 'Preliminares' );
 			$x=0;
+			$y=0;
 			$y=$cantidad_equipos-1;
 
 			//Insertar primer jornada
@@ -238,6 +239,80 @@
 
 							$x++;
 							$x++;
+						elseif($i == $cantidad_jornadas-2):
+							$dividido = ceil($preliminares/2);
+							$y = ($preliminares * 2)-1;
+							$equipos_partido[0] = $equipos[$y];
+							if(isset($equipos[$y+1])):
+								$equipos_partido[1] = $equipos[$y+1];	
+							endif;							
+							$partidos[$j] = $equipos_partido;
+
+							if($preliminares % 2 == 0):
+								if($j < $dividido):
+									$equipos_partido[0] = 26;
+									$equipos_partido[1] = 26;	
+									$partidos[$j] = $equipos_partido;									
+								endif;
+							else:
+								if($j < $dividido):
+									$equipos_partido[0] = 26;
+									$equipos_partido[1] = $equipos[$y+1];	
+									$partidos[$j] = $equipos_partido;
+								endif;
+							endif;							
+							
+							try{
+								$query_ins_part = $db_ins_part->getQuery(true);
+								 
+								// Insert columns.
+								$columns = array('id_torneo', 'id_jornada');
+								 
+								// Insert values.
+								$values = array($_SESSION['id_torneo'], $id_jornada);
+								 
+								// Prepare the insert query.
+								$query_ins_part
+								    ->insert($db_ins_part->quoteName('partido'))
+								    ->columns($db_ins_part->quoteName($columns))
+								    ->values(implode(',', $values));
+								 
+								// Set the query using our newly populated query object and execute it.
+								$db_ins_part->setQuery($query_ins_part);
+								$db_ins_part->execute();	
+								$id_partido = $db_ins_part->insertid();
+
+								$equipos_p = $partidos[$j];
+									$query_ins_part = $db_ins_part->getQuery(true);
+									 
+									// Insert columns.
+									$columns = array('id_equipo1', 'id_equipo2', 'id_partido');
+									 
+									// Insert values.
+									if($j < $dividido):
+										if($preliminares % 2 == 0):
+											$values = array($equipos_p[0], $equipos_p[1], $id_partido);
+										else:
+											$values = array($equipos_p[0], $equipos_p[1]->id_eq, $id_partido);
+										endif;											
+									else:
+										$values = array($equipos_p[0]->id_eq, $equipos_p[1]->id_eq, $id_partido);
+									endif; 
+									// Prepare the insert query.
+									$query_ins_part
+									    ->insert($db_ins_part->quoteName('partido_equipos'))
+									    ->columns($db_ins_part->quoteName($columns))
+									    ->values(implode(',', $values));
+									 
+									// Set the query using our newly populated query object and execute it.
+									$db_ins_part->setQuery($query_ins_part);
+									$db_ins_part->execute();
+							}
+							catch(Exception $e){
+								echo $e;
+							};		
+								$y++;
+								$y++;
 						else:
 							try{
 								$query_ins_part = $db_ins_part->getQuery(true);
@@ -263,10 +338,10 @@
 									$query_ins_part = $db_ins_part->getQuery(true);
 									 
 									// Insert columns.
-									$columns = array('id_partido');
+									$columns = array('id_equipo1', 'id_equipo2', 'id_partido');
 									 
 									// Insert values.
-									$values = array($id_partido);
+									$values = array(26, 26, $id_partido);
 									 
 									// Prepare the insert query.
 									$query_ins_part
