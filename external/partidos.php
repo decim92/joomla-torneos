@@ -50,6 +50,10 @@ $db_p_tantos = & JDatabase::getInstance( $option );
     $results_p_tantos = $db_p_tantos->loadObjectList();
 	
 ?>
+<ol class="breadcrumb">
+  <li><a href="index.php/../../calendario" target="_parent">CALENDARIO</a></li>
+  <!-- <li><a class="active"><?php // echo $results_equipo[0]->nombre_equipo;?></a></li> -->
+</ol>
 <h4>Configurando Partido</h4>
 	<form action="validaciones/v_partido.php" class="form" role="form" name="partido" id="partido" method="post" target="_parent">
         <div class="form-group col-sm-3">

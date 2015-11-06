@@ -87,6 +87,9 @@
 
 				    if($results_tg[0]->tipo_g == 1):
 
+				    //Clasificacion ligas
+
+
 				    elseif($results_tg[0]->tipo_g == 0):
 
 				    	//llamo jornada de partido

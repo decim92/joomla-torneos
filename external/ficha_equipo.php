@@ -29,10 +29,14 @@
 <link rel="stylesheet" href="css/jasny-bootstrap.min">
 
 <link rel="stylesheet" type="text/css" href="css/custom.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
 </head>
 <script type="text/javascript" src="js/automapa.js"></script>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
 <script type="text/javascript" src="js/jquery-toaster.js"></script>
+<script type="text/javascript" src="js/moment.js"></script>
+<script type="text/javascript" src="js/locales.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
 
 <style>
 .btn-file {
@@ -219,6 +223,15 @@
     unset($_SESSION['equipo_a']);
     endif;
   endif;
+
+  if(isset($_SESSION['jugador_creado'])):
+    if($_SESSION['jugador_creado'] == 1):
+      echo "
+      <script type='text/javascript'>$.toaster({ priority : 'success', title : 'JUGADOR', message : 'Agregado'});</script>
+    ";
+    unset($_SESSION['jugador_creado']);
+    endif;
+  endif;
 ?>
 
 </body>
@@ -261,7 +274,7 @@
             <!-- Content will be loaded here from "remote.php" file -->
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">CREAR EQUIPO</h4>
+                <h4 class="modal-title">AGREGAR JUGADOR</h4>
             </div>
             <div class="modal-body">
             
@@ -281,40 +294,27 @@
           <input type="text" class="form-control" id="documento" name="documento" >
         </div>
 
-        <div class="form-group col-sm-4">
-        <label for="dia" class="control-label">DÍA</label>           
-          <select class="form-control" id="dia" name="dia" >
-            <option value="0">-----</option>
-            <?php 
-            for ($i=1; $i <= 31; $i++):
-              echo "<option value='0".$i."'>".$i."</option>";
-            endfor;              
-            ?>
-          </select>
-        </div>
-        <div class="form-group col-sm-4">
-        <label for="mes" class="control-label">MES</label>           
-          <select class="form-control" id="mes" name="mes" >
-            <option value="0">-----</option>
-            <?php 
-            $meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo','Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
-            for ($i=1; $i <= 12; $i++):
-              echo "<option value='0".$i."'>".$meses[$i]."</option>";
-            endfor;              
-            ?>
-          </select>
-        </div>
-        <div class="form-group col-sm-4">
-        <label for="anio" class="control-label">AÑO</label>           
-          <select class="form-control" id="anio" name="anio" >
-            <option value="0">-----</option>
-            <?php 
-            for ($i=1915; $i <=2015 ; $i++):
-              echo "<option value='0".$i."'>".$i."</option>";
-            endfor;              
-            ?>
-          </select>
-        </div>
+        <div class="form-group col-sm-12">
+                <label class="control-label" for="fecha">FECHA DE NACIMIENTO*:</label>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' class="form-control" name="fecha" value=""/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker1').datetimepicker({
+                      format: 'YYYY-MM-DD',
+                      locale: 'es',
+                      maxDate: '2015-11-06'
+                      
+                });
+                    
+                });
+            </script>
         <div class="form-group col-sm-6">
         <label for="direccion" class="control-label">DIRECCIÓN*</label>           
           <input type="text" class="form-control" id="direccion" name="direccion" >

@@ -44,8 +44,14 @@
     $numRows_l = $db_l->getNumRows(); 
     $results_l = $db_l->loadObjectList();
 
+
+
+
     $db_tabla_grupo = & JDatabase::getInstance( $option );
     $db_equi_no_g = & JDatabase::getInstance( $option );
+    $db_jornadas_e = & JDatabase::getInstance( $option );
+    $db_tabla_partidos1 = & JDatabase::getInstance( $option );
+    $db_tabla_partidos2 = & JDatabase::getInstance( $option );
 	else:
 		echo "<p>WTF</p>";
 	endif;
@@ -136,7 +142,7 @@
     <table class='table table-hover'>
     <thead>
       <tr>
-        <th>P</th>
+        <th>PA</th>
         <th>NOMBRE</th>
         <th>P</th>
         <th>PJ</th>
@@ -149,7 +155,7 @@
       </tr>
       </thead>
       <tbody data-link='row' class='rowlink'>";        
-        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo
+        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq
         FROM equipo_grupo, equipo
         WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
         $db_tabla_grupo->setQuery($query_tabla_grupo);
@@ -157,10 +163,155 @@
         $numRows_tabla_grupo = $db_tabla_grupo->getNumRows();      
         $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
 
+
         for ($j=0; $j < $numRows_tabla_grupo; $j++): 
+
+            //bloque clasificacion ligas
+              //ganados
+                $db_ganados = & JDatabase::getInstance( $option );
+                      $query_ganados = "SELECT COUNT(id_ganador) as cont_g, id_ganador
+                      FROM partido, jornada, grupo
+                      WHERE partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND  id_ganador = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_ganados->setQuery($query_ganados);
+                      $db_ganados->execute();
+                      $numRows_ganados = $db_ganados->getNumRows(); 
+                      $results_ganados = $db_ganados->loadObjectList();
+
+                $ganados = $results_ganados[0]->cont_g;
+              //perdidos
+                $db_perdidos = & JDatabase::getInstance( $option );
+                      $query_perdidos = "SELECT COUNT(id_perdedor) as cont_p, id_perdedor
+                      FROM partido, jornada, grupo
+                      WHERE partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND  id_perdedor = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_perdidos->setQuery($query_perdidos);
+                      $db_perdidos->execute();
+                      $numRows_perdidos = $db_perdidos->getNumRows(); 
+                      $results_perdidos = $db_perdidos->loadObjectList(); 
+
+                $perdidos = $results_perdidos[0]->cont_p;
+              //empatados
+                $db_empatados1 = & JDatabase::getInstance( $option );
+                      $query_empatados1 = "SELECT COUNT(id_equipo1) as cont_e, id_equipo1
+                      FROM partido, jornada, grupo, partido_equipos
+                      WHERE partido.id_partido = partido_equipos.id_partido  AND partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND empatado = 1 AND id_equipo1 = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_empatados1->setQuery($query_empatados1);
+                      $db_empatados1->execute();
+                      $numRows_empatados1 = $db_empatados1->getNumRows(); 
+                      $results_empatados1 = $db_empatados1->loadObjectList(); 
+
+                $empatados1 = $results_empatados1[0]->cont_e;
+
+                $db_empatados2 = & JDatabase::getInstance( $option );
+                      $query_empatados2 = "SELECT COUNT(id_equipo2) as cont_e, id_equipo2
+                      FROM partido, jornada, grupo, partido_equipos
+                      WHERE partido.id_partido = partido_equipos.id_partido  AND partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND empatado = 1 AND id_equipo2 = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_empatados2->setQuery($query_empatados2);
+                      $db_empatados2->execute();
+                      $numRows_empatados2 = $db_empatados2->getNumRows(); 
+                      $results_empatados2 = $db_empatados2->loadObjectList(); 
+                  
+                $empatados2 = $results_empatados2[0]->cont_e;
+
+                $empatados = $empatados1 + $empatados2;
+              //jugados
+
+                $jugados = $ganados + $perdidos + $empatados;
+              //puntos
+              $db_puntuacion = & JDatabase::getInstance( $option );
+                      $query_puntuacion = "SELECT puntos_p, puntos_g, puntos_e
+                      FROM torneo
+                      WHERE id_torneo =".$_SESSION['id_torneo'];
+                      $db_puntuacion->setQuery($query_puntuacion);
+                      $db_puntuacion->execute();
+                      $numRows_puntuacion = $db_puntuacion->getNumRows(); 
+                      $results_puntuacion = $db_puntuacion->loadObjectList(); 
+
+              $puntos_g = $ganados * $results_puntuacion[0]->puntos_g;
+              $puntos_p = $perdidos * $results_puntuacion[0]->puntos_p;
+              $puntos_e = $empatados * $results_puntuacion[0]->puntos_e;
+              $puntos = $puntos_e + $puntos_g + $puntos_p;
+
+              //a favor y en contra
+
+              $db_fc1 = & JDatabase::getInstance( $option );
+                      $query_fc1 = "SELECT SUM(tantos1) as favor, SUM(tantos2) as contra
+                      FROM partido, jornada, grupo, partido_equipos
+                      WHERE partido.id_partido = partido_equipos.id_partido  AND partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND id_equipo1 = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_fc1->setQuery($query_fc1);
+                      $db_fc1->execute();
+                      $numRows_fc1 = $db_fc1->getNumRows(); 
+                      $results_fc1 = $db_fc1->loadObjectList(); 
+
+              $db_fc2 = & JDatabase::getInstance( $option );
+                      $query_fc2 = "SELECT SUM(tantos1) as favor, SUM(tantos2) as contra
+                      FROM partido, jornada, grupo, partido_equipos
+                      WHERE partido.id_partido = partido_equipos.id_partido  AND partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND id_equipo2 = ".$results_tabla_grupo[$j]->id_eq;
+                      $db_fc2->setQuery($query_fc2);
+                      $db_fc2->execute();
+                      $numRows_fc2 = $db_fc2->getNumRows(); 
+                      $results_fc2 = $db_fc2->loadObjectList(); 
+              
+              $favor1 = $results_fc1[0]->favor;
+              $favor2 = $results_fc2[0]->favor;
+              $favor = $favor1 + $favor2;
+
+              $contra1 = $results_fc1[0]->contra;
+              $contra2 = $results_fc2[0]->contra;
+              $contra = $contra1 + $contra2;
+
+              //diferencia
+
+              $diferencia = $favor - $contra;
+
+                      //actualizar
+                      
+                      $db_act_clasi_l = & JDatabase::getInstance( $option );
+
+                      $query_act_clasi_l = $db_act_clasi_l->getQuery(true);
+
+                      $fields = array(
+                        $db_act_clasi_l->quoteName('pg') . ' = ' . $ganados,
+                        $db_act_clasi_l->quoteName('pj') . ' = ' . $jugados,
+                        $db_act_clasi_l->quoteName('p') . ' = ' . $puntos,
+                        $db_act_clasi_l->quoteName('pp') . ' = ' . $perdidos,
+                        $db_act_clasi_l->quoteName('pe') . ' = ' . $empatados,
+                        $db_act_clasi_l->quoteName('f') . ' = ' . $favor,
+                        $db_act_clasi_l->quoteName('c') . ' = ' . $contra,
+                        $db_act_clasi_l->quoteName('d') . ' = ' . $diferencia
+                         
+                        );
+                      $conditions = array(
+                        $db_act_clasi_l->quoteName('id_equipo') . ' = ' . $results_tabla_grupo[$j]->id_eq
+                        );
+                       
+                      $query_act_clasi_l
+                          ->update($db_act_clasi_l->quoteName('equipo_grupo'))
+                          ->set($fields)
+                          ->where($conditions);
+                      $db_act_clasi_l->setQuery($query_act_clasi_l);
+                      $db_act_clasi_l->execute();
+
+            //endbloque
+
+        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq, pg, pj, p, pp, pe, f, c, d
+        FROM equipo_grupo, equipo
+        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
+        $db_tabla_grupo->setQuery($query_tabla_grupo);
+        $db_tabla_grupo->execute();   
+        $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
+
           echo "<tr>
           <td>#</td>          
           <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
+          <td>".$results_tabla_grupo[$j]->p."</td>          
+          <td>".$results_tabla_grupo[$j]->pj."</td>          
+          <td>".$results_tabla_grupo[$j]->pg."</td>          
+          <td>".$results_tabla_grupo[$j]->pe."</td>          
+          <td>".$results_tabla_grupo[$j]->pp."</td>          
+          <td>".$results_tabla_grupo[$j]->f."</td>          
+          <td>".$results_tabla_grupo[$j]->c."</td>          
+          <td>".$results_tabla_grupo[$j]->d."</td>          
+
         </tr>"; 
         endfor;       
       echo "
@@ -191,88 +342,140 @@
       
       </div>
     </div> 
-      
-      
-  <div class='box-info full relative'>
-    
-  <div id='play-off-cross' class='top-bordered'>
-    <div class='cruces-eliminatoria'>
-      <div><!---->
-          <div class='ronda'>
-          <div class='h5'>Semifinal</div>
-              <div style='height: 100px;'>
+   <!-- Caja de posiciones-->   
+      <div class='box-info full relative'>
+        
+      <div id='play-off-cross' class='top-bordered'>
+        <div class='cruces-eliminatoria'>
+          <div>
+   ";
+   $query_jornadas_e = "SELECT jornada.descripcion as descr_jornada, jornada.id_jornada as id_jor
+        FROM jornada
+        WHERE jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+        $db_jornadas_e->setQuery($query_jornadas_e);
+        $db_jornadas_e->execute();   
+        $numRows_jornadas_e = $db_jornadas_e->getNumRows();      
+        $results_jornadas_e = $db_jornadas_e->loadObjectList(); 
+        $u = 0;
+    for ($z=$numRows_jornadas_e-1; $z >= 0; $z--) : 
+      try{
+              
+
+                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
+                FROM partido_equipos, equipo, partido, jornada, grupo
+                WHERE partido_equipos.id_equipo1 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_jornadas_e[$z]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo;  
+
+                $query_tabla_partidos2 = "SELECT DISTINCT partido_equipos.id_equipo2 as id_eq2, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
+                FROM partido_equipos, equipo, partido, jornada, grupo
+                WHERE partido_equipos.id_equipo2 = equipo.id_equipo AND partido.id_partido = partido_equipos.id_partido AND partido.id_jornada = jornada.id_jornada AND grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada =".$results_jornadas_e[$z]->id_jor." AND jornada.id_grupo =".$results_all_g[$i]->id_grupo; 
+             
+              
+              $db_tabla_partidos1->setQuery($query_tabla_partidos1);
+              $db_tabla_partidos1->execute();   
+              $numRows_tabla_partidos1 = $db_tabla_partidos1->getNumRows();      
+              $results_tabla_partidos1 = $db_tabla_partidos1->loadObjectList();
+
+              $db_tabla_partidos2->setQuery($query_tabla_partidos2);
+              $db_tabla_partidos2->execute();   
+              $numRows_tabla_partidos2 = $db_tabla_partidos2->getNumRows();      
+              $results_tabla_partidos2 = $db_tabla_partidos2->loadObjectList();
+
+
+              $size_ronda = pow(2, $u);
+
+              echo "
+                <div class='ronda'>
+                <div class='h5'>".$results_jornadas_e[$z]->descr_jornada."</div>";
+
+              for ($j=0; $j < $numRows_tabla_partidos1; $j++): 
+                
+                echo "
+                <div style='height: ".$size_ronda."00px;'>
                 <div class='linea-vertical'>
                 <div class='linea-horizontal'></div>
                 <div class='caja-participantes'>                      
-                <div data-equipo-cruce='354555' class='equipo-cruce ganador'>
-                    <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
-                    <a href='https://mileyenda.com/es/admin/team/354555'>
-                    milan</a><span>
-                          1                         
+                <div class='"; 
+                if($results_tabla_partidos1[$j]->tantos_1 > $results_tabla_partidos1[$j]->tantos_2):
+                  echo "equipo-cruce ganador";
+                else:
+                  echo "equipo-cruce";
+                endif;
+                
+
+                echo "'>";
+
+                if(file_exists("img/escudos/".$results_tabla_partidos1[$j]->id_eq1.".png")):
+                echo "<img src='img/escudos/".$results_tabla_partidos1[$j]->id_eq1.".png' alt='' width='30px' height='30px'>";
+              else:
+                echo "<img src='img/escudos/base.png' alt='' width='30px' height='30px'>";
+              endif;  
+                echo "
+                  <a href='ficha_equipo.php?id_equipo=".$results_tabla_partidos1[$j]->id_eq1."' title='Editar'>
+          ".$results_tabla_partidos1[$j]->nombre_equipo."
+          </a>
+                    <span>
+                          ".$results_tabla_partidos2[$j]->tantos_1."                         
                         </span>
-                </div>                                                                                                                            
-                <div data-equipo-cruce='347258' class='equipo-cruce'>
-                  <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
-                  <a href='https://mileyenda.com/es/admin/team/347258'>
-                    Mil                         
-                    </a>
+                </div>
+
+                <div class='";
+                if($results_tabla_partidos1[$j]->tantos_2 > $results_tabla_partidos1[$j]->tantos_1):
+                  echo "equipo-cruce ganador";
+                else:
+                  echo "equipo-cruce";
+                endif;
+
+                echo "'>";
+
+                if(file_exists("img/escudos/".$results_tabla_partidos2[$j]->id_eq2.".png")):
+                  echo "<img src='img/escudos/".$results_tabla_partidos2[$j]->id_eq2.".png' alt='' width='30px' height='30px'>";
+                else:
+                  echo "<img src='img/escudos/base.png' alt='' width='30px' height='30px'>";
+                endif;  
+                echo "
+                <a href='ficha_equipo.php?id_equipo=".$results_tabla_partidos2[$j]->id_eq2."' title='Editar'>
+          ".$results_tabla_partidos2[$j]->nombre_equipo."
+          </a>
                   <span>
-                    0                         
+                    ".$results_tabla_partidos2[$j]->tantos_2."                         
                     </span>
                 </div>  
                 </div>
                 </div>
-              </div>
-              <div style='height: 100px;'>
-                <div class='linea-vertical'>
-                <div class='linea-horizontal'></div>
-                <div class='caja-participantes'>                        
-                <div data-equipo-cruce='372204' class='equipo-cruce ganador'>
-                          <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/0YANWNleYnZ1Gtco8D8bjwdm.30x30.jpg'>
-                          <a href='https://mileyenda.com/es/admin/team/372204'>
-                            eeeee                         </a>
-                          <span>                                                      
-                          </span>
                 </div>
-                <div></div>                       
-                </div>
-                </div>
-              </div>
-            </div><!--
-          --><div class='ronda'>
-          <div class='h5'>Final</div>
-            <div style='height: 200px;'>
-            <div class='linea-vertical'>
-            <div class='linea-horizontal'></div>
-            <div class='caja-participantes'>                          
+              ";
 
-            <div data-equipo-cruce='354555' class='equipo-cruce'>
-                          <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/equipo.30x30.png'>
-                          <a href='https://mileyenda.com/es/admin/team/354555'>
-                            milan                         </a>
-                          <span>
-                          </span>
-            </div>                                                                                        
-            <div data-equipo-cruce='372204' class='equipo-cruce'>
-              <img src='./Clasificación _ Prueba actual _ fdkc _ miLeyenda_files/0YANWNleYnZ1Gtco8D8bjwdm.30x30.jpg'>
-              <a href='https://mileyenda.com/es/admin/team/372204'>
-                eeeee                         </a>
-              <span>
-            </span>
-            </div>                                        
-            </div>
-            </div>
-            </div>
-            </div><!--
-        --></div><!--
-      --><div><!-- Linea de los titulos -->&nbsp;</div>
+
+
+                // echo "<td>".$results_tabla_partidos1[$j]->nombre_equipo."</td>          
+                // <td><a href='partidos.php?id_partido=".$results_tabla_partidos1[$j]->this_id_p."&id_equipo1=".$results_tabla_partidos1[$j]->id_eq1."&id_equipo2=".$results_tabla_partidos2[$j]->id_eq2."&n_equipo1=".$results_tabla_partidos1[$j]->nombre_equipo."&n_equipo2=".$results_tabla_partidos2[$j]->nombre_equipo."' title='Editar'>
+              //".$results_tabla_partidos2[$j]->tantos_1." - ".$results_tabla_partidos2[$j]->tantos_2."</a></td>          
+                // <td>".$results_tabla_partidos2[$j]->nombre_equipo."</td>   
+
+              endfor;   
+        }catch(Exception $e){
+          echo $e;
+        }
+
+              echo "
+             </div>
+              
+            
+                ";
+
+        $u++;
+      endfor;
+echo "
+</div>
+<div><!-- Linea de los titulos -->&nbsp;</div>
     </div>
   </div>
         
   </div>
 
-
    </div>
+
+<!--END Caja de posiciones-->   
       ";
       endif;
       endfor;

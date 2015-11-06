@@ -5,7 +5,7 @@
 	<title>Document</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/jasny-bootstrap.min">
-
+	<link rel="stylesheet" type="text/css" href="css/custom.css">
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
@@ -71,9 +71,9 @@ include "conexion.php";
 			<td>
 				";
 				if($results[$i]->estado == 1):
-					echo "publicado";
+					echo "<div class='dot-info' title='Publicado'>";
 				elseif($results[$i]->estado == 0):
-					echo "configurando";
+					echo "<div class='dot-warning' title='Pendiente'>";
 				endif;			
 
 				echo "		

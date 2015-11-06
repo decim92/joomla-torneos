@@ -1,77 +1,67 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	header('Location: ../../equipos');
+ 	// header('Location: ../../equipos?id_equipo='.$_POST['id_equi']);
  	include "../conexion.php";
 
  	// echo $_POST['nombreEquipo'];
- 	if(isset($_POST['btnCrearEquipo'])):
- 	if($_POST['btnCrearEquipo']):
- 	if($_POST['nombreEquipo'] != ""):
+ 	if(isset($_POST['btnAgregarJugador'])):
+ 	if($_POST['btnAgregarJugador']):
+ 	if($_POST['nombres'] != "" && $_POST['apellidos'] != "" && $_POST['documento'] != "" && $_POST['direccion'] != "" && $_POST['telefono'] != "" && $_POST['email'] != "" && $_POST['fecha'] != ""):
 	try{
-		$db_insE = & JDatabase::getInstance( $option );
+		$db_insJu = & JDatabase::getInstance( $option );
 	$user = JFactory::getUser();
-	$query_insE = $db_insE->getQuery(true);
+	$query_insJu = $db_insJu->getQuery(true);
 	
-	if($_POST['pac-input'] != ""):
-
-		// Insert columns.
-	$columns = array('nombre','id_usuario', 'color1', 'color2', 'ubicacion');
-	 
-	// Insert values.
-	$values = array($db_insE->quote($_POST['nombreEquipo']), $user->id, $db_insE->quote($_POST['color1Equipo']."|".$_POST['color11Equipo']), $db_insE->quote($_POST['color2Equipo']."|".$_POST['color22Equipo']), $db_insE->quote($_POST['pac-input']));
-
-	else:
-
-		// Insert columns.
-	$columns = array('nombre','id_usuario', 'color1', 'color2');
-	 
-	// Insert values.
-	$values = array($db_insE->quote($_POST['nombreEquipo']), $user->id, $db_insE->quote($_POST['color1Equipo']."|".$_POST['color11Equipo']), $db_insE->quote($_POST['color2Equipo']."|".$_POST['color22Equipo']));
-
-	endif; 
 	
+
+		// insJurt columns.
+	$columns = array('nombres','apellidos', 'documento', 'direccion', 'telefono', 'email', 'f_nacimiento');
 	 
-	// Prepare the insert query.
-	$query_insE
-	    ->insert($db_insE->quoteName('equipo'))
-	    ->columns($db_insE->quoteName($columns))
+	// insJurt values.
+	$values = array($db_insJu->quote($_POST['nombres']), $db_insJu->quote($_POST['apellidos']), $db_insJu->quote($_POST['documento']), $db_insJu->quote($_POST['direccion']), $db_insJu->quote($_POST['telefono']), $db_insJu->quote($_POST['email']), $db_insJu->quote($_POST['fecha']));
+
+	 
+	// Prepare the insJurt query.
+	$query_insJu
+	    ->insert($db_insJu->quoteName('jugador'))
+	    ->columns($db_insJu->quoteName($columns))
 	    ->values(implode(',', $values));
 	 
 	// Set the query using our newly populated query object and execute it.
-	$db_insE->setQuery($query_insE);
-	$db_insE->execute();
-	$id_equipo = $db_insE->insertid();
+	$db_insJu->setQuery($query_insJu);
+	$db_insJu->execute();
+	$id_jugador = $db_insJu->insertid();
 	$id_torneo = $_SESSION['id_torneo'];
 
 	
 
-	$query_insE = $db_insE->getQuery(true);
+	$query_insJu = $db_insJu->getQuery(true);
 
-	$columns = array('id_equipo', 'id_torneo');
+	$columns = array('id_jugador', 'id_equipo', 'id_torneo');
 	 
-	// Insert values.
-	$values = array($id_equipo, $id_torneo);
+	// insJurt values.
+	$values = array( $id_jugador, $_POST['id_equi'], $id_torneo);
 	 
-	// Prepare the insert query.
-	$query_insE
-	    ->insert($db_insE->quoteName('jugador_equipo_t'))
-	    ->columns($db_insE->quoteName($columns))
+	// Prepare the insJurt query.
+	$query_insJu
+	    ->insert($db_insJu->quoteName('jugador_equipo_t'))
+	    ->columns($db_insJu->quoteName($columns))
 	    ->values(implode(',', $values));
 	 
 	// Set the query using our newly populated query object and execute it.
-	$db_insE->setQuery($query_insE);
-	$db_insE->execute();					
-	// $_SESSION['correcto'] = 1;	
+	$db_insJu->setQuery($query_insJu);
+	$db_insJu->execute();					
+	$_SESSION['jugador_creado'] = 1;	
 	}catch(Exception $e){
-		echo "Error";		
+		echo $e;		
 	};
 	else:
 		$_SESSION['correcto'] = 0;
 		echo "Error";		
 	endif;
 
-	if(isset($_FILES['foto']) && $_POST['nombreEquipo'] != ""):
+	if(isset($_FILES['foto']) && $_POST['nombres'] != "" && $_POST['apellidos'] != "" && $_POST['documento'] != "" && $_POST['direccion'] != "" && $_POST['telefono'] != "" && $_POST['email'] != "" && $_POST['fecha'] != ""):
 		echo "Hola";
 		\error_reporting(E_ALL ^ E_NOTICE);
 				$ruta="../img/fotos";
@@ -131,6 +121,8 @@
 			// Liberar memoria
 			imagedestroy($lienzo);
 	endif;
+
+
 
 	endif;
 	endif;
