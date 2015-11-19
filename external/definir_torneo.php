@@ -11,7 +11,29 @@
 <script type="text/javascript" src="js/automapa.js"></script>
 <script type="text/javascript" src="js/jquery-toaster.js"></script>
 <!-- <script type="text/javascript" src="js/custom.js"></script> -->
+<style>
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
 
+
+}
+</style>
 <body>
 	<?php
 
@@ -281,6 +303,20 @@
 					</form>
 				</div>
 				<div class="col-sm-4">
+				  
+				    <a href="#modalLogoTorneo" class="thumbnail" data-toggle="modal" data-backdrop="static">
+				    <?php
+				    if(file_exists("img/torneos/".$_SESSION['id_torneo'].".png")):
+				      echo "<img src='img/torneos/".$_SESSION['id_torneo'].".png' alt='' class='img-circle' width='200px' height='200px'>";
+				    elseif(file_exists("img/torneos/".$_SESSION['id_torneo'].".jpg")):
+				      echo "<img src='img/torneos/".$_SESSION['id_torneo'].".jpg' alt='' class='img-circle' width='200px' height='200px'>";
+				    else:
+				      echo "<img src='img/torneos/trophy.png' alt='' width='200px' class='img-circle' height='200px'>";
+				    endif;
+				    ?>			      
+				    </a>
+				</div>
+				<div class="col-sm-4">
 				<a class="a_ns" href="#modal_estado_t">
 				<div class="well">	
 				<?php 
@@ -330,6 +366,37 @@
 ?>
 <div id="map"></div>
 </body>
+
+<div id="modalLogoTorneo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Content will be loaded here from "remote.php" file -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">CAMBIAR LOGO</h4>
+            </div>
+            <div class="modal-body">
+            <div class=" container">
+          <div class="col-sm-5 col-sm-offset-1">
+      <form action="validaciones/v_torneo.php" class="form" role="form" name="logo_t" id="logo_t" method="post" target="_parent" enctype="multipart/form-data">
+      <input type="hidden" name="id_torneo" value="<?php echo $_SESSION['id_torneo'];?>">
+        <div class="form-group col-sm-8">
+        <!-- <label for="escudo" class="control-label">ESCUDO </label>            -->
+        <span class="btn btn-info btn-file">
+         ELEGIR LOGO <input type="file"  name="logo" id="logo"> 
+        </span>
+        </div>
+
+        
+        <input type="submit" class="btn btn-success" name="btnALogo" id="btnALogo" value="ACEPTAR"></input>
+      </form>
+      </div>
+      
+      </div>
+      </div>
+        </div>
+    </div>
+</div>
 	<!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDow8Qmh2-GzKZY1CZ-NXsC7vL89-qYrVs&signed_in=true&libraries=places&callback=initMap"

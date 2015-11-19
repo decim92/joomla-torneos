@@ -74,6 +74,8 @@
     <?php
     if(file_exists("img/escudos/".$results_equipo[0]->this_id_equipo.".png")):
       echo "<img src='img/escudos/".$results_equipo[0]->this_id_equipo.".png' alt='' width='60px' height='60px'>";
+    elseif(file_exists("img/escudos/".$results_equipo[0]->this_id_equipo.".jpg")):
+      echo "<img src='img/escudos/".$results_equipo[0]->this_id_equipo.".jpg' alt='' width='60px' height='60px'>";
     else:
       echo "<img src='img/escudos/base.png' alt='' width='60px' height='60px'>";
     endif;

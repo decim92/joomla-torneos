@@ -6,11 +6,39 @@
   	<title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-
+<link rel="stylesheet" href="css/jasny-bootstrap.min">
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-toaster.js"></script>
   <body>
+<script language="javascript">// <![CDATA[
+// $(document).ready(function() {
+// //  $("#btnCrearEquipo").click(function(){
+//     // Interceptamos el evento submit
+//     $('#anadirEquipo').submit(function() {
+//       var orden = $('#orden').val();
+//   // Enviamos el formulario usando AJAX
+//     if(orden != ""){
+//         // $.ajax({
+//         //     type: 'POST',
+//         //     url: $(this).attr('action'),
+//         //     data: $(this).serialize(),
+//         //     // Mostramos un mensaje con la respuesta de PHP
+//         //     success: function(data) {
+//         //         $('#result').html(data);
+//         //     }
+//         // })        
+//       $("#div_orden").addClass("has-success");  
+//         return true;
+
+//         }else{
+//     $("#div_orden").addClass("has-error");  
+//     return false;
+//   };
+//     });
+// })
+// // ]]></script>
 
  
 <?php 
@@ -47,7 +75,6 @@
 
 
 
-    $db_tabla_grupo = & JDatabase::getInstance( $option );
     $db_equi_no_g = & JDatabase::getInstance( $option );
     $db_jornadas_e = & JDatabase::getInstance( $option );
     $db_tabla_partidos1 = & JDatabase::getInstance( $option );
@@ -142,7 +169,7 @@
     <table class='table table-hover'>
     <thead>
       <tr>
-        <th>PA</th>
+        <th>POS</th>
         <th>NOMBRE</th>
         <th>P</th>
         <th>PJ</th>
@@ -154,10 +181,11 @@
         <th>D</th>
       </tr>
       </thead>
-      <tbody data-link='row' class='rowlink'>";        
-        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq
+      <tbody data-link='row' class='rowlink'>"; 
+        $db_tabla_grupo = & JDatabase::getInstance( $option );       
+        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq, p
         FROM equipo_grupo, equipo
-        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
+        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo." ORDER BY p DESC, d DESC, f DESC, pe DESC";  
         $db_tabla_grupo->setQuery($query_tabla_grupo);
         $db_tabla_grupo->execute();   
         $numRows_tabla_grupo = $db_tabla_grupo->getNumRows();      
@@ -216,6 +244,7 @@
               //jugados
 
                 $jugados = $ganados + $perdidos + $empatados;
+
               //puntos
               $db_puntuacion = & JDatabase::getInstance( $option );
                       $query_puntuacion = "SELECT puntos_p, puntos_g, puntos_e
@@ -243,7 +272,7 @@
                       $results_fc1 = $db_fc1->loadObjectList(); 
 
               $db_fc2 = & JDatabase::getInstance( $option );
-                      $query_fc2 = "SELECT SUM(tantos1) as favor, SUM(tantos2) as contra
+                      $query_fc2 = "SELECT SUM(tantos1) as contra, SUM(tantos2) as favor
                       FROM partido, jornada, grupo, partido_equipos
                       WHERE partido.id_partido = partido_equipos.id_partido  AND partido.id_jornada = jornada.id_jornada AND jornada.id_grupo = grupo.id_grupo AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo." AND id_equipo2 = ".$results_tabla_grupo[$j]->id_eq;
                       $db_fc2->setQuery($query_fc2);
@@ -264,6 +293,7 @@
               $diferencia = $favor - $contra;
 
                       //actualizar
+             
                       
                       $db_act_clasi_l = & JDatabase::getInstance( $option );
 
@@ -290,32 +320,47 @@
                           ->where($conditions);
                       $db_act_clasi_l->setQuery($query_act_clasi_l);
                       $db_act_clasi_l->execute();
-
-            //endbloque
-
-        $query_tabla_grupo = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq, pg, pj, p, pp, pe, f, c, d
+                      // echo $puntos." ".$jugados." ".$ganados." ".$empatados." ".$perdidos." ".$favor." ".$contra." ".$diferencia."<br>";
+        endfor;
+          //  endbloque
+        $db_tabla_grupo2 = & JDatabase::getInstance( $option );
+        $query_tabla_grupo2 = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.id_equipo as id_eq, pg, pj, p, pp, pe, f, c, d, equipo.id_equipo as id_eq
         FROM equipo_grupo, equipo
-        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo;  
-        $db_tabla_grupo->setQuery($query_tabla_grupo);
-        $db_tabla_grupo->execute();   
-        $results_tabla_grupo = $db_tabla_grupo->loadObjectList();
-
-          echo "<tr>
-          <td>#</td>          
-          <td>".$results_tabla_grupo[$j]->nombre_equipo."</td>          
-          <td>".$results_tabla_grupo[$j]->p."</td>          
-          <td>".$results_tabla_grupo[$j]->pj."</td>          
-          <td>".$results_tabla_grupo[$j]->pg."</td>          
-          <td>".$results_tabla_grupo[$j]->pe."</td>          
-          <td>".$results_tabla_grupo[$j]->pp."</td>          
-          <td>".$results_tabla_grupo[$j]->f."</td>          
-          <td>".$results_tabla_grupo[$j]->c."</td>          
-          <td>".$results_tabla_grupo[$j]->d."</td>          
+        WHERE equipo_grupo.id_equipo = equipo.id_equipo AND equipo_grupo.id_grupo =".$results_all_g[$i]->id_grupo." ORDER BY p DESC, d DESC, f DESC, pe DESC";  
+        $db_tabla_grupo2->setQuery($query_tabla_grupo2);
+        $db_tabla_grupo2->execute(); 
+        $numRows_tabla_grupo2 = $db_tabla_grupo2->getNumRows();        
+        $results_tabla_grupo2 = $db_tabla_grupo2->loadObjectList();
+ 
+        for ($q=0; $q < $numRows_tabla_grupo2; $q++): 
+          if($q == 0 && $q != $numRows_tabla_grupo2-1):
+            echo "<tr style='background-color:#9FFFA2;'>";
+          else:
+            echo "<tr>";
+          endif;
+          if($q == $numRows_tabla_grupo2-1 && $q != 0):
+            echo "<tr style='background-color:#FF7070;'>";
+          endif;
+          echo "
+          <td>".($q+1)."</td>          
+          <td>
+          <a href='ficha_equipo.php?id_equipo=".$results_tabla_grupo2[$q]->id_eq."' title='Editar'>
+          ".$results_tabla_grupo2[$q]->nombre_equipo."
+          </a>
+          </td>          
+          <td>".$results_tabla_grupo2[$q]->p."</td>          
+          <td>".$results_tabla_grupo2[$q]->pj."</td>          
+          <td>".$results_tabla_grupo2[$q]->pg."</td>          
+          <td>".$results_tabla_grupo2[$q]->pe."</td>          
+          <td>".$results_tabla_grupo2[$q]->pp."</td>          
+          <td>".$results_tabla_grupo2[$q]->f."</td>          
+          <td>".$results_tabla_grupo2[$q]->c."</td>          
+          <td>".$results_tabla_grupo2[$q]->d."</td>          
 
         </tr>"; 
         endfor;       
       echo "
-    <tbody>    
+    </tbody>    
     </table>  
    </div>
       ";
@@ -341,7 +386,20 @@
       </div>
       
       </div>
-    </div> 
+    </div> ";
+
+    $db_eli_creada = & JDatabase::getInstance( $option );
+          $query_eli_creada = "SELECT count(partido.id_partido) as cant_partidos
+          FROM partido, jornada, grupo
+          WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND grupo.id_grupo = ".$results_all_g[$i]->id_grupo;  
+          $db_eli_creada->setQuery($query_eli_creada);
+          $db_eli_creada->execute();
+          $numRows_eli_creada = $db_eli_creada->getNumRows(); 
+          $results_eli_creada = $db_eli_creada->loadObjectList();
+
+          if($results_eli_creada[0]->cant_partidos > 0):
+          
+    echo "
    <!-- Caja de posiciones-->   
       <div class='box-info full relative'>
         
@@ -409,6 +467,7 @@
               else:
                 echo "<img src='img/escudos/base.png' alt='' width='30px' height='30px'>";
               endif;  
+              if($results_tabla_partidos1[$j]->id_eq1 != 26):
                 echo "
                   <a href='ficha_equipo.php?id_equipo=".$results_tabla_partidos1[$j]->id_eq1."' title='Editar'>
           ".$results_tabla_partidos1[$j]->nombre_equipo."
@@ -419,6 +478,19 @@
                 </div>
 
                 <div class='";
+                else:
+                  echo "
+                <a href='#' title='Editar'>
+          ".$results_tabla_partidos1[$j]->nombre_equipo."
+            </a>
+                    <span>
+                          ".$results_tabla_partidos2[$j]->tantos_1."                         
+                        </span>
+                </div>
+
+                <div class='";
+              endif;
+                
                 if($results_tabla_partidos1[$j]->tantos_2 > $results_tabla_partidos1[$j]->tantos_1):
                   echo "equipo-cruce ganador";
                 else:
@@ -432,7 +504,8 @@
                 else:
                   echo "<img src='img/escudos/base.png' alt='' width='30px' height='30px'>";
                 endif;  
-                echo "
+                if($results_tabla_partidos2[$j]->id_eq2 != 26):
+                  echo "
                 <a href='ficha_equipo.php?id_equipo=".$results_tabla_partidos2[$j]->id_eq2."' title='Editar'>
           ".$results_tabla_partidos2[$j]->nombre_equipo."
           </a>
@@ -444,6 +517,21 @@
                 </div>
                 </div>
               ";
+                else:
+                  echo "
+                <a href='#' title='Editar'>
+          ".$results_tabla_partidos2[$j]->nombre_equipo."
+          </a>
+                  <span>
+                    ".$results_tabla_partidos2[$j]->tantos_2."                         
+                    </span>
+                </div>  
+                </div>
+                </div>
+                </div>
+              ";
+                endif;
+                
 
 
 
@@ -477,6 +565,69 @@ echo "
 
 <!--END Caja de posiciones-->   
       ";
+            else:
+                $db_eli_eq = & JDatabase::getInstance( $option );
+                $query_eli_eq = "SELECT equipo.nombre as nombre_equipo, equipo_grupo.orden as orden_eq, equipo.id_equipo as this_id_equipo
+                FROM equipo, equipo_grupo
+                WHERE equipo.id_equipo = equipo_grupo.id_equipo AND equipo_grupo.id_grupo = ".$results_all_g[$i]->id_grupo." ORDER BY equipo_grupo.orden";  
+                $db_eli_eq->setQuery($query_eli_eq);
+                $db_eli_eq->execute();
+                $numRows_eli_eq = $db_eli_eq->getNumRows(); 
+                $results_eli_eq = $db_eli_eq->loadObjectList();
+
+                echo "
+                <div class='col-sm-5' style='margin-top:30px;'>
+                <table class='table table-hover table-bordered col-sm-6'>
+                  <thead>
+                    <tr>
+                      <th>ESCUDO</th>
+                      <th>NOMBRE</th>
+                      <th>ORDEN</th>
+                    </tr>
+                    </thead>
+                    <tbody data-link='row' class='rowlink'> ";
+                  for ($l=0; $l < $numRows_eli_eq; $l++):
+                                      echo " <tr>";
+                        if(file_exists("img/escudos/".$results_eli_eq[$l]->this_id_equipo.".png")):
+                        echo"
+                          <td>
+                            <img src='img/escudos/".$results_eli_eq[$l]->this_id_equipo.".png' height='24px' width='24px'>   
+                          </td>";
+                        elseif(file_exists("img/escudos/".$results_eli_eq[$l]->this_id_equipo.".jpg")):
+                        echo"
+                          <td>
+                            <img src='img/escudos/".$results_eli_eq[$l]->this_id_equipo.".jpg' height='24px' width='24px'>   
+                          </td>";
+                        else:
+                          echo"
+                          <td>
+                            <img src='img/escudos/base.png' height='24px' width='24px'>   
+                          </td>";
+                        endif;
+                        echo "
+                          <td>
+                            <a href='ficha_equipo.php?id_equipo=".$results_eli_eq[$l]->this_id_equipo."' title='Editar'>
+                            ".$results_eli_eq[$l]->nombre_equipo."
+                            </a>
+                          </td>     
+                          <td>                           
+                            ".$results_eli_eq[$l]->orden_eq."                          
+                          </td>     
+                            
+                        </tr>
+                        ";        
+                                      
+                  endfor;
+                      
+                echo "
+                    </tbody>
+                  </thead>
+                </table>
+                </div>
+                ";
+
+
+            endif;
       endif;
       endfor;
     endif;
@@ -486,19 +637,46 @@ echo "
       <h3>Menu 1</h3>
       <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
     </div> -->
+
   </div>
   <?php
-          if(isset($_SESSION['campos_vacios'])):
-            if($_SESSION['campos_vacios'] == 1):
+          if(isset($_SESSION['equipo_vacio'])):
+            if($_SESSION['equipo_vacio'] == 1):
               echo "
               <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'CAMPO', message : 'Vacío'});</script>
             ";
-            unset($_SESSION['campos_vacios']);
+            unset($_SESSION['equipo_vacio']);
+            endif;
+          endif;
+
+          if(isset($_SESSION['no_agrega'])):
+            if($_SESSION['no_agrega'] == 1):
+              echo "
+              <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'CALENDARIO', message : 'Calendario Existe, imposible añadir más equipos'});</script>
+            ";
+            unset($_SESSION['no_agrega']);
+            endif;
+          endif;
+          if(isset($_SESSION['orden_existe'])):
+            if($_SESSION['orden_existe'] == 1):
+              echo "
+              <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'ORDEN', message : 'Orden Repetido, imposible añadir equipo'});</script>
+            ";
+            unset($_SESSION['orden_existe']);
+            endif;
+          endif;
+          if(isset($_SESSION['orden_vacio'])):
+            if($_SESSION['orden_vacio'] == 1):
+              echo "
+              <script type='text/javascript'>$.toaster({ priority : 'danger', title : 'ORDEN', message : 'Orden Vacío, imposible añadir equipo'});</script>
+            ";
+            unset($_SESSION['orden_vacio']);
             endif;
           endif;
   ?>
 <div id="result"></div>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/jasny-bootstrap.min.js"></script>
   </body>
 
 
@@ -520,7 +698,7 @@ echo "
             <div class='modal-body'>
             <div>
             <div class='container'>
-        <form action='validaciones/v_clasificacion.php' role='form' name='anadirEquipo' id='anadirEquipo".$results_all_g[$i]->id_grupo."' method='post' target='_parent'>
+        <form action='validaciones/v_clasificacion.php' role='form' name='anadirEquipo' id='anadirEquipo' method='post' target='_parent'>
             <input type='hidden' name ='idGrupo' value='".$results_all_g[$i]->id_grupo."'>
             <input type='hidden' name ='tipo_grupo' value='".$results_all_g[$i]->tipo_grupo."'>
         <div class='form-group col-sm-4 ";
@@ -547,7 +725,7 @@ echo "
         </select>
         </div>";
         if($results_all_g[$i]->tipo_grupo == 0):
-        echo "<div class='form-group col-sm-2'>
+        echo "<div class='form-group col-sm-2' id='div_orden'>
           <label for='aEquipo' class='control-label'>ORDEN:</label> 
           <input type='number' min='1' max='33' id='orden' name='orden' class='form-control'>
         </div>";

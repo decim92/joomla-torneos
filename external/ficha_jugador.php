@@ -67,6 +67,8 @@
     <?php
     if(file_exists("img/fotos/".$results_ju[0]->id_ju.".png")):
       echo "<img src='img/fotos/".$results_ju[0]->id_ju.".png' alt='' width='60px' height='60px'>";
+    elseif(file_exists("img/fotos/".$results_ju[0]->id_ju.".jpg")):
+      echo "<img src='img/fotos/".$results_ju[0]->id_ju.".jpg' alt='' width='60px' height='60px'>";
     else:
       echo "<img src='img/fotos/anonimo.png' alt='' width='60px' height='60px'>";
     endif;

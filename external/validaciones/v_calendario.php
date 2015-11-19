@@ -132,8 +132,9 @@
 			$equipos_partido = array();
 			$nombre_jornadas = array('Final', 'Semifinal', 'Cuartos de Final', 'Octavos de Final', 'Primera Ronda', 'Preliminares' );
 			$x=0;
-			$y=0;
-			$y=$cantidad_equipos-1;
+			// $y=0;
+			// $y=$cantidad_equipos-1;
+			$y = ($preliminares * 2)-1;
 
 			//Insertar primer jornada
 			for ($i=0; $i < $cantidad_jornadas; $i++): 
@@ -245,7 +246,6 @@
 							$x++;
 						elseif($i == $cantidad_jornadas-2):
 							$dividido = ceil($preliminares/2);
-							$y = ($preliminares * 2)-1;
 							$equipos_partido[0] = $equipos[$y];
 							if(isset($equipos[$y+1])):
 								$equipos_partido[1] = $equipos[$y+1];	
@@ -260,9 +260,15 @@
 								endif;
 							else:
 								if($j < $dividido):
-									$equipos_partido[0] = 26;
-									$equipos_partido[1] = $equipos[$y+1];	
-									$partidos[$j] = $equipos_partido;
+									if($j == $dividido-1):
+										$equipos_partido[0] = 26;
+										$equipos_partido[1] = $equipos[$y+1];	
+										$partidos[$j] = $equipos_partido;
+									elseif($j < $dividido-1):
+										$equipos_partido[0] = 26;
+										$equipos_partido[1] = 26;	
+										$partidos[$j] = $equipos_partido;									
+									endif;									
 								endif;
 							endif;							
 							
@@ -297,9 +303,13 @@
 										if($preliminares % 2 == 0):
 											$values = array($equipos_p[0], $equipos_p[1], $id_partido);
 										else:
-											$values = array($equipos_p[0], $equipos_p[1]->id_eq, $id_partido);
+											if($j == $dividido-1):
+												$values = array($equipos_p[0], $equipos_p[1]->id_eq, $id_partido);
+											else:
+												$values = array($equipos_p[0], $equipos_p[1], $id_partido);	
+											endif;											
 										endif;											
-									else:
+									elseif($j >= $dividido):
 										$values = array($equipos_p[0]->id_eq, $equipos_p[1]->id_eq, $id_partido);
 									endif; 
 									// Prepare the insert query.

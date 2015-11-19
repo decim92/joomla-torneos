@@ -71,8 +71,7 @@
 								$db_act_p->quoteName('lugar') . ' = ' . $db_act_p->quote($_POST['pac-input']),
 								$db_act_p->quoteName('id_ganador') . ' = ' . 0,
 								$db_act_p->quoteName('id_perdedor') . ' = ' . 0,
-								$db_act_p->quoteName('empatado') . ' = ' . 1,		
-								$db_act_p->quoteName('jugado') . ' = ' . 1
+								$db_act_p->quoteName('empatado') . ' = ' . 1
 							);
 						elseif($_POST['tantos1'] > $_POST['tantos2']):
 							$fields = array(
@@ -80,8 +79,7 @@
 								$db_act_p->quoteName('hora') . ' = ' . $db_act_p->quote($_POST['hora']),
 								$db_act_p->quoteName('lugar') . ' = ' . $db_act_p->quote($_POST['pac-input']),
 								$db_act_p->quoteName('id_ganador') . ' = ' . $db_act_p->quote($_POST['id_equipo1']),
-								$db_act_p->quoteName('id_perdedor') . ' = ' . $db_act_p->quote($_POST['id_equipo2']),		
-								$db_act_p->quoteName('jugado') . ' = ' . 1
+								$db_act_p->quoteName('id_perdedor') . ' = ' . $db_act_p->quote($_POST['id_equipo2'])
 							);
 							
 						elseif($_POST['tantos1'] < $_POST['tantos2']):
@@ -91,8 +89,7 @@
 								$db_act_p->quoteName('hora') . ' = ' . $db_act_p->quote($_POST['hora']),
 								$db_act_p->quoteName('lugar') . ' = ' . $db_act_p->quote($_POST['pac-input']),
 								$db_act_p->quoteName('id_ganador') . ' = ' . $db_act_p->quote($_POST['id_equipo2']),
-								$db_act_p->quoteName('id_perdedor') . ' = ' . $db_act_p->quote($_POST['id_equipo1']),		
-								$db_act_p->quoteName('jugado') . ' = ' . 1		
+								$db_act_p->quoteName('id_perdedor') . ' = ' . $db_act_p->quote($_POST['id_equipo1'])
 								
 							);
 							
@@ -110,6 +107,58 @@
 					$db_act_p->setQuery($query_act_p);
 					$db_act_p->execute();
 
+					//calcular jugado
+
+
+					if($_POST['fecha'] != "0000-00-00"):
+						date_default_timezone_set("America/Bogota");
+						$hoy = getdate();
+						$mifecha = $hoy[year]."-".$hoy[mon]."-".$hoy[mday];
+						$mihora = $hoy[hours].":".$hoy[minutes].":".$hoy[seconds];
+						echo $mifecha."<br>";
+						echo $mihora."<br>";
+						echo $_POST['fecha']."<br>";
+						echo $_POST['hora']."<br>";
+
+
+						if($_POST['fecha']<= $mifecha && $_POST['hora']< $mihora):
+							$query_act_p = $db_act_p->getQuery(true);
+							$fields = array(
+								$db_act_p->quoteName('jugado') . ' = ' . 1		
+							);							
+
+							
+							$conditions = array(
+								$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+								);
+							 
+							$query_act_p
+							    ->update($db_act_p->quoteName('partido'))
+							    ->set($fields)
+							    ->where($conditions);
+							$db_act_p->setQuery($query_act_p);
+							$db_act_p->execute();
+						else:
+							$query_act_p = $db_act_p->getQuery(true);
+							$fields = array(
+								$db_act_p->quoteName('jugado') . ' = ' . 0		
+							);							
+
+							
+							$conditions = array(
+								$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+								);
+							 
+							$query_act_p
+							    ->update($db_act_p->quoteName('partido'))
+							    ->set($fields)
+							    ->where($conditions);
+							$db_act_p->setQuery($query_act_p);
+							$db_act_p->execute();
+						endif;
+						
+					endif;
+					//fin calcular jugado
 					
 				    if($results_tg[0]->tipo_g == 1):
 
@@ -183,7 +232,7 @@
 									echo $sig_pos. "sp<br> ";
 									echo $j+0.5. "j+<br> ";
 
-									if($sig_pos == $j && $j % 2 == 0):
+									if($j % 2 == 0):
 										if($results_ganadores[$j]->id_gana != 0):
 										$fields = array(
 										$db_act_pos->quoteName('id_equipo1') . ' = ' . $results_ganadores[$j]->id_gana										

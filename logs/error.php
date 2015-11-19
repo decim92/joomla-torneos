@@ -32,3 +32,4 @@
 2015-11-05T02:18:08+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.
 2015-11-05T02:18:14+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.
 2015-11-05T02:59:33+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.
+2015-11-19T01:54:02+00:00	INFO ::1	joomlafailure	El usuario y contraseña no coinciden o usted aún no tiene una cuenta.

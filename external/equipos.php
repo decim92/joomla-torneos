@@ -248,6 +248,11 @@ $(document).ready(function() {
         <td>
           <img src='img/escudos/".$results_jet[$i]->this_id_equipo.".png' height='24px' width='24px'>   
         </td>";
+      elseif(file_exists("img/escudos/".$results_jet[$i]->this_id_equipo.".jpg")):
+      echo"
+        <td>
+          <img src='img/escudos/".$results_jet[$i]->this_id_equipo.".jpg' height='24px' width='24px'>   
+        </td>";
       else:
         echo"
         <td>

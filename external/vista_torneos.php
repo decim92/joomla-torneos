@@ -32,7 +32,7 @@ include "conexion.php";
 	<table class="table table-hover">
 	 <thead>
     <tr>
-      <th>ID</th>
+      <th>LOGO</th>
       <th>NOMBRE</th>
       <th>UBICACION</th>
       <th>DEPORTE</th>
@@ -50,9 +50,24 @@ include "conexion.php";
 			//$descripcion = $results[$i]->descripcion;
 			echo "			
 		<tr>
-			<td>
-				".$results[$i]->id_t."		
-			</td>
+			";
+			if(file_exists("img/torneos/".$results[$i]->id_t.".png")):
+          echo"
+            <td>
+              <img src='img/torneos/".$results[$i]->id_t.".png' height='24px' width='24px'>   
+            </td>";
+          elseif(file_exists("img/torneos/".$results[$i]->id_t.".jpg")):
+          echo"
+            <td>
+              <img src='img/torneos/".$results[$i]->id_t.".jpg' height='24px' width='24px'>   
+            </td>";
+          else:
+            echo"
+            <td>
+              <img src='img/torneos/trophy.png' height='24px' width='24px'>   
+            </td>";
+          endif;
+			echo"
 			<td>
 				<a href='../definir-tor/".$id_t."' target='_parent' title='Editar'>
 				".$results[$i]->descr_t."

@@ -18,20 +18,20 @@
   $db_consulta= & JDatabase::getInstance( $option );
             $user = JFactory::getUser();
         if (isset($_REQUEST["btnBuscar"])) {
-            $query_consulta = " SELECT torneo.descripcion AS nombre_torneo,
+            $query_consulta = " SELECT torneo.descripcion AS nombre_torneo, torneo.id_torneo as this_id_torneo, deporte.nombre as nombre_deporte,
                                        categoria.descripcion AS categoria
-                                FROM torneo, categoria
-                                WHERE categoria.id_categoria = torneo.id_categoria and
+                                FROM torneo, categoria, deporte
+                                WHERE categoria.id_categoria = torneo.id_categoria and deporte.id_deporte = torneo.id_deporte and
                                       torneo.publicado=1 and torneo.descripcion LIKE '%".$_POST['buscara']."%'"; 
             $db_consulta->setQuery($query_consulta);
             $db_consulta->execute();
             $numRows_buscar = $db_consulta->getNumRows();   // obtener numero de filas
             $results_buscar = $db_consulta->loadObjectList(); // carga array de los resultados
         }else{
-            $query_consulta = " SELECT torneo.descripcion AS nombre_torneo,
+            $query_consulta = " SELECT torneo.descripcion AS nombre_torneo, torneo.id_torneo as this_id_torneo, deporte.nombre as nombre_deporte,
                                        categoria.descripcion AS categoria
-                                FROM torneo, categoria
-                                WHERE categoria.id_categoria = torneo.id_categoria and
+                                FROM torneo, categoria, deporte
+                                WHERE categoria.id_categoria = torneo.id_categoria and deporte.id_deporte = torneo.id_deporte and
                                       torneo.publicado=1"; 
             $db_consulta->setQuery($query_consulta);
             $db_consulta->execute();
@@ -57,23 +57,43 @@
   </div>
 <div class="col-sm-10 col-sm-offset-1"> 
     <table class="table table-striped ">
-    	<tr>
             <thead>
+              <tr>
+              <th>LOGO</th>
                <th>NOMBRE TORNEO</th>
-               <th>TIPO</th>
+               <th>DEPORTE</th>
                <th>CATEGORIA</th>
-               <th>USUARIO</th> 
+              </tr>
             </thead>
-    	</tr>
+            <tbody data-link="row" class="rowlink">
+    	
     	<?php 
     		for ($i=0; $i <$numRows_buscar ; $i++):
-    		   echo "<tr>
-    		     <td>".$results_buscar[$i]->nombre_torneo."</td>    		     
+    		   echo "<tr>";
+         if(file_exists("img/torneos/".$results_buscar[$i]->this_id_torneo.".png")):
+          echo"
+            <td>
+              <img src='img/torneos/".$results_buscar[$i]->this_id_torneo.".png' height='24px' width='24px'>   
+            </td>";
+          elseif(file_exists("img/torneos/".$results_buscar[$i]->this_id_torneo.".jpg")):
+          echo"
+            <td>
+              <img src='img/torneos/".$results_buscar[$i]->this_id_torneo.".jpg' height='24px' width='24px'>   
+            </td>";
+          else:
+            echo"
+            <td>
+              <img src='img/torneos/trophy.png' height='24px' width='24px'>   
+            </td>";
+          endif;
+         echo"
+    		     <td><a href='vista_publica_torneos.php?id_torneo=".$results_buscar[$i]->this_id_torneo."'>".$results_buscar[$i]->nombre_torneo."</a></td>    		     
+              <td>".$results_buscar[$i]->nombre_deporte."</td>
                  <td>".$results_buscar[$i]->categoria."</td>
-                 <td>".$user->username."</td>
     		   </tr>";
     		endfor;    	
     	?>
+      </tbody>
     </table>	
 </div>
   </div>

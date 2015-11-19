@@ -55,7 +55,7 @@ $(document).ready(function(){
   endif;
   
 ?>
-<h3>Pequeña descripción</h3>
+
 
 <?php 
 ?>
@@ -151,7 +151,11 @@ $(document).ready(function(){
       </tr>
       </thead>
       <tbody data-link='row' class='rowlink'>"; 
-          try{        
+      if($numRows_combo_jornadas > 0):
+
+            try{        
+             
+            
               if(isset($_SESSION['id_jornada'])):
                $query_tabla_partidos1 = "SELECT DISTINCT partido_equipos.id_equipo1 as id_eq1, equipo.nombre as nombre_equipo, partido_equipos.id_partido as this_id_p, partido.fecha as fecha_p, partido.hora as hora_p, partido.lugar as lugar_p, partido.jugado as jugado_p, partido_equipos.tantos1 as tantos_1, partido_equipos.tantos2 as tantos_2
               FROM partido_equipos, equipo, partido, jornada, grupo 
@@ -204,6 +208,8 @@ $(document).ready(function(){
         }catch(Exception $e){
           echo $e;
         }
+      
+      endif;
           
 
         

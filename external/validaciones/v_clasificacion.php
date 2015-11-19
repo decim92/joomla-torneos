@@ -3,7 +3,7 @@
 	// unset($_SESSION['correcto']);
  	header('Location: ../../clasificacion');
  	include "../conexion.php";
-
+					
 	// $_SESSION['categ']= $_POST['listaCate'];
 	// $_SESSION['descrip']= $_POST['descripcion'];
 	// $_SESSION['ubica']= $_POST['pac-input'];
@@ -61,28 +61,74 @@
 
 		if (isset($_POST['btnAniadirEquipo'])):
 			if ($_POST['btnAniadirEquipo']):
-				if($_POST['aEquipo'] != 0):
-					if($_POST['tipo_grupo'] == 1):	
-						$columns = array('id_equipo', 'id_grupo');
-						$values = array($_POST['aEquipo'], $_POST['idGrupo']);
-					else:
-						if($_POST['tipo_grupo'] == 0 && $_POST['aEquipo'] != null):
-							$columns = array('id_equipo', 'id_grupo', 'orden');
-							$values = array($_POST['aEquipo'], $_POST['idGrupo'], $_POST['orden']);
+				$db_calend_c = & JDatabase::getInstance( $option );
+				    $query_calend_c = "SELECT count(partido.id_partido) as cant_partidos
+				    FROM partido, jornada, grupo
+				    WHERE grupo.id_grupo = jornada.id_grupo AND jornada.id_jornada = partido.id_jornada AND grupo.id_grupo = ".$_POST['idGrupo'];  
+				    $db_calend_c->setQuery($query_calend_c);
+				    $db_calend_c->execute();
+				    $numRows_calend_c = $db_calend_c->getNumRows(); 
+				    $results_calend_c = $db_calend_c->loadObjectList();
+			    	if($results_calend_c[0]->cant_partidos <= 0):
+
+			    if($_POST['orden'] !=""):
+			    	$db_eli_orden = & JDatabase::getInstance( $option );
+	                $query_eli_orden = "SELECT equipo_grupo.orden as orden_eq
+	                FROM equipo, equipo_grupo
+	                WHERE equipo.id_equipo = equipo_grupo.id_equipo AND equipo_grupo.id_grupo = ".$_POST['idGrupo']." AND equipo_grupo.orden = ".$_POST['orden'];  
+	                $db_eli_orden->setQuery($query_eli_orden);
+	                $db_eli_orden->execute();
+	                $numRows_eli_orden = $db_eli_orden->getNumRows(); 
+	                $results_eli_orden = $db_eli_orden->loadObjectList();
+			    endif;
+			    
+
+			    		if($_POST['aEquipo'] != 0):							
+							if($_POST['tipo_grupo'] == 1):	
+								$columns = array('id_equipo', 'id_grupo');
+								$values = array($_POST['aEquipo'], $_POST['idGrupo']);
+								$query_ins_equi_g
+								    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
+								    ->columns($db_ins_equi_g->quoteName($columns))
+								    ->values(implode(',', $values));
+								$db_ins_equi_g->setQuery($query_ins_equi_g);
+								$db_ins_equi_g->execute();
+							else:
+								if($_POST['orden']!=""):
+									if($_POST['tipo_grupo'] == 0 && $_POST['aEquipo'] != 0 && $numRows_eli_orden <= 0):
+										
+										$columns = array('id_equipo', 'id_grupo', 'orden');
+										$values = array($_POST['aEquipo'], $_POST['idGrupo'], $_POST['orden']);
+										$query_ins_equi_g
+									    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
+									    ->columns($db_ins_equi_g->quoteName($columns))
+									    ->values(implode(',', $values));
+									$db_ins_equi_g->setQuery($query_ins_equi_g);
+									$db_ins_equi_g->execute();
+									else:
+										if($_POST['aEquipo'] == 0):
+											$_SESSION['equipo_vacio'] = 1;
+										endif;
+										if(isset($_POST['orden'])):
+										endif;
+										if($numRows_eli_orden > 0):
+											$_SESSION['orden_existe'] = 1;
+										endif;								
+										
+									endif;
+								else:
+									$_SESSION['orden_vacio'] = 1;
+								endif;								
+							endif;
+								 
+										
 						else:
-							$_SESSION['campos vacios'] = 1;
+						$_SESSION['campos_vacios'] = 1;						
 						endif;
-					endif;
-						 
-						$query_ins_equi_g
-						    ->insert($db_ins_equi_g->quoteName('equipo_grupo'))
-						    ->columns($db_ins_equi_g->quoteName($columns))
-						    ->values(implode(',', $values));
-						$db_ins_equi_g->setQuery($query_ins_equi_g);
-						$db_ins_equi_g->execute();		
-				else:
-				$_SESSION['campos vacios'] = 1;
-				endif;
+					else:
+						$_SESSION['no_agrega'] = 1;
+			    	endif;
+				
 			endif;
 		endif;	
 	
@@ -155,9 +201,9 @@
 
 	$query_eliminar_g->delete($db_eliminar_g->quoteName('equipo_grupo')) 
 		// ->join('INNER', $db_eliminar_g->quoteName('#__users', 'b') . ' ON (' . $db->quoteName('a.created_by') . ' = ' . $db->quoteName('b.id') . ')')
-       ->where(array($db_eliminar_g->quoteName('id_equipo') . ' IN 
-       	(SELECT id_e FROM 
-       		(SELECT equipo_grupo.id_equipo AS id_e 
+       ->where(array($db_eliminar_g->quoteName('id_grupo') . ' IN 
+       	(SELECT id_g FROM 
+       		(SELECT equipo_grupo.id_grupo AS id_g 
        			FROM equipo_grupo, grupo 
        			WHERE grupo.id_grupo = equipo_grupo.id_grupo and grupo.id_grupo = '.$_POST['idGrupo'].')AS j)' )); 
 	
@@ -182,7 +228,6 @@
 	// $_SESSION['id_torneo'] = $db_ins->insertid();	
 	}catch(Exception $e){
 		echo $e;		
-		echo $query_act_descr_g;
 	};
 	// endif;
 	// endif;
