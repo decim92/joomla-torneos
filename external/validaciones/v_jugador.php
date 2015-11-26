@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	header('Location: ../../equipos?id_equipo='.$_POST['id_equi']);
+ 	// header('Location: ../../equipos?id_equipo='.$_POST['id_equi']);
  	include "../conexion.php";
 
  	// echo $_POST['nombreEquipo'];
@@ -34,38 +34,12 @@
 	$id_jugador = $db_insJu->insertid();
 	$id_torneo = $_SESSION['id_torneo'];
 
-	
-
-	$query_insJu = $db_insJu->getQuery(true);
-
-	$columns = array('id_jugador', 'id_equipo', 'id_torneo');
-	 
-	// insJurt values.
-	$values = array( $id_jugador, $_POST['id_equi'], $id_torneo);
-	 
-	// Prepare the insJurt query.
-	$query_insJu
-	    ->insert($db_insJu->quoteName('jugador_equipo_t'))
-	    ->columns($db_insJu->quoteName($columns))
-	    ->values(implode(',', $values));
-	 
-	// Set the query using our newly populated query object and execute it.
-	$db_insJu->setQuery($query_insJu);
-	$db_insJu->execute();					
-	$_SESSION['jugador_creado'] = 1;	
-	}catch(Exception $e){
-		echo $e;		
-	};
-	else:
-		$_SESSION['correcto'] = 0;
-		echo "Error";		
-	endif;
-
-	if(isset($_FILES['foto']) && $_POST['nombres'] != "" && $_POST['apellidos'] != "" && $_POST['documento'] != "" && $_POST['direccion'] != "" && $_POST['telefono'] != "" && $_POST['email'] != "" && $_POST['fecha'] != ""):
-		echo "Hola";
+	if(isset($_FILES['foto'])):
+		echo "<br>".$id_jugador." <br>";
+	echo "hola";
 		\error_reporting(E_ALL ^ E_NOTICE);
 				$ruta="../img/fotos";
-				$nombre=$id_equipo; //obtiene nombre
+				$nombre=$id_jugador; //obtiene nombre
 				$archivo=$_FILES['foto']['tmp_name'];
 				$nombre_archivo=$_FILES['foto']['name'];
 				$ext= pathinfo($nombre_archivo);
@@ -120,9 +94,36 @@
 			imagejpeg($lienzo, "../img/fotos/".$nombre.".".$ext['extension'], 80);
 			// Liberar memoria
 			imagedestroy($lienzo);
+	else:
+		echo "choa";
 	endif;
 
+	
 
+	$query_insJu = $db_insJu->getQuery(true);
+
+	$columns = array('id_jugador', 'id_equipo', 'id_torneo');
+	 
+	// insJurt values.
+	$values = array( $id_jugador, $_POST['id_equi'], $id_torneo);
+	 
+	// Prepare the insJurt query.
+	$query_insJu
+	    ->insert($db_insJu->quoteName('jugador_equipo_t'))
+	    ->columns($db_insJu->quoteName($columns))
+	    ->values(implode(',', $values));
+	 
+	// Set the query using our newly populated query object and execute it.
+	$db_insJu->setQuery($query_insJu);
+	$db_insJu->execute();					
+	$_SESSION['jugador_creado'] = 1;	
+	}catch(Exception $e){
+		echo $e;		
+	};
+	else:
+		$_SESSION['correcto'] = 0;
+		echo "Error";		
+	endif;
 
 	endif;
 	endif;

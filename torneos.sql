@@ -254,7 +254,7 @@ CREATE TABLE `jugador` (
   `id_usuario` int(11) NOT NULL,
   `foto` varchar(250) COLLATE latin1_spanish_ci NOT NULL,
   PRIMARY KEY (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=445 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=454 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -705,6 +705,8 @@ INSERT INTO `jugador` VALUES (439,'JOSE LUIS','MORENO HUAYTALLA ','1073327177','
 INSERT INTO `jugador` VALUES (440,'CARLOS MARIO','MAGUIÃ‘A CCAHUANA ','1073327178','1991-10-30','AV. INDEPENDENCIA N. 1282-A','3017403550','j.sanchez@iem.cfmac.csic.es',0,'');
 INSERT INTO `jugador` VALUES (443,'asdf','asdf','2345','2015-11-04','asgsd','2435','asdf@szdf.ee',0,'');
 INSERT INTO `jugador` VALUES (444,'George','Random','1020394','1971-11-25','Calle del ayer','5555555','asdf@asdfasdf.es',0,'');
+INSERT INTO `jugador` VALUES (445,'Gustavo','Villanueva','2221234123','2000-03-02','Calle del Bronx','555555552','muchoflow@hot.com',0,'');
+INSERT INTO `jugador` VALUES (446,'John ','Rezza','3308975','2015-11-06','Calle del Bronx','12341234','rm@gmail.es',0,'');
 /*!40000 ALTER TABLE `jugador` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -729,7 +731,7 @@ CREATE TABLE `jugador_equipo_t` (
   CONSTRAINT `FK_JT_EQUIP` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id_equipo`),
   CONSTRAINT `FK_JT_TORNE` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`),
   CONSTRAINT `jugador_equipo_t_ibfk_1` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -755,6 +757,8 @@ INSERT INTO `jugador_equipo_t` VALUES (59,NULL,28,2);
 INSERT INTO `jugador_equipo_t` VALUES (60,NULL,29,2);
 INSERT INTO `jugador_equipo_t` VALUES (61,443,21,1);
 INSERT INTO `jugador_equipo_t` VALUES (62,444,21,1);
+INSERT INTO `jugador_equipo_t` VALUES (63,445,25,1);
+INSERT INTO `jugador_equipo_t` VALUES (64,446,25,1);
 /*!40000 ALTER TABLE `jugador_equipo_t` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -976,4 +980,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-25 23:55:03
+-- Dump completed on 2015-11-26 15:01:02

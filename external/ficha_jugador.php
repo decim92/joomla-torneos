@@ -58,7 +58,7 @@
 <body>
   <ol class="breadcrumb">
   <li><a href="index.php/../../equipos" target="_parent">EQUIPO</a></li>
-  <li><a href='index.php/../../equipos?id_equipo=".$results_ju->id_eq."' target="_parent"><?php echo $results_ju[0]->nombre_equipo;?></a></li>
+  <li><a href='index.php/../../equipos?id_equipo=<?php echo $results_ju[0]->id_eq;?>' target="_parent"><?php echo $results_ju[0]->nombre_equipo;?></a></li>
   <li><a class="active"><?php echo $results_ju[0]->nombres." ".$results_ju[0]->apellidos;?></a></li>
 </ol>
 <div class="row">

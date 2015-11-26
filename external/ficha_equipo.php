@@ -287,7 +287,7 @@
             
             <div class=" container">
           <div class="col-sm-5 col-sm-offset-1">
-            <form action="validaciones/v_jugador.php" class="form" role="form" name="equipo" id="equipo" method="post" target="_parent">
+            <form action="validaciones/v_jugador.php" class="form" role="form" name="equipo" id="equipo" method="post" target="_parent" enctype="multipart/form-data">
         <div class="form-group col-sm-12">
         <label for="nombres" class="control-label">NOMBRES*</label>           
           <input type="text" class="form-control" id="nombres" name="nombres">
