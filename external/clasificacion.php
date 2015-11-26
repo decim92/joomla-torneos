@@ -6,7 +6,7 @@
   	<title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-<link rel="stylesheet" href="css/jasny-bootstrap.min">
+<link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 <script type="text/javascript" src="../media/jui/js/jquery.js"></script>
@@ -79,9 +79,7 @@
     $db_jornadas_e = & JDatabase::getInstance( $option );
     $db_tabla_partidos1 = & JDatabase::getInstance( $option );
     $db_tabla_partidos2 = & JDatabase::getInstance( $option );
-	else:
-		echo "<p>WTF</p>";
-	endif;
+	
 	
 ?>
   	<nav class="navbar navbar-default" role="navigation">
@@ -121,11 +119,14 @@
       <input type="submit" class="btn btn-default" value="NUEVA LIGA" id="btnNuevaLig" name="btnNuevaLig">
       
       <input type="submit" class="btn btn-default" value="NUEVA ELIMINATORIA" id="btnNuevaEli" name="btnNuevaEli">
-      <input type="submit" class="btn btn-default" value="DESEMPATE" id="btnDesempate" name="btnDesempate">
+      <!-- <input type="submit" class="btn btn-default" value="DESEMPATE" id="btnDesempate" name="btnDesempate"> -->
     </form>
   </div>  
 </nav>
 <?php 
+  else:
+    echo "<div class='alert alert-warning col-xs-12 col-sm-12' role='alert'>No se ha definido un torneo.</div>";
+  endif;
 ?>
   <ul class="nav nav-tabs">
     <?php
@@ -371,7 +372,8 @@
         echo " in active";
       endif;  
       echo "'>
-    <div class='btn-toolbar pull-right' role='toolbar' aria-label='Toolbar with button groups'>
+      <div class='col-sm-offset-8' style='margin-top:3px;'>
+    <div class='btn-toolbar' role='toolbar' aria-label='Toolbar with button groups'>
       <div class='btn-group'>
       <a href='#aniadirEquipo".$results_all_g[$i]->id_grupo."' class='btn btn-primary btn-sm' role='button' data-toggle='modal' data-backdrop='static'> AÑADIR EQUIPO</a>      
       </div>
@@ -386,7 +388,9 @@
       </div>
       
       </div>
-    </div> ";
+    </div> 
+    </div>
+    ";
 
     $db_eli_creada = & JDatabase::getInstance( $option );
           $query_eli_creada = "SELECT count(partido.id_partido) as cant_partidos

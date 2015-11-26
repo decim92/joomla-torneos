@@ -1,11 +1,13 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
+	<link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-    <link rel="stylesheet" href="css/jasny-bootstrap.min">
+    <link rel="stylesheet" href="css/jasny-bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
 	<script type="text/javascript" src="../media/jui/js/jquery.js"></script>
@@ -87,7 +89,7 @@
             </td>";
           endif;
          echo"
-    		     <td><a href='vista_publica_torneos.php?id_torneo=".$results_buscar[$i]->this_id_torneo."'>".$results_buscar[$i]->nombre_torneo."</a></td>    		     
+    		     <td><a href='../index.php/vista-publica?id_torneo=".$results_buscar[$i]->this_id_torneo."' target='_parent' title='Ver'>".$results_buscar[$i]->nombre_torneo."</a></td>    		     
               <td>".$results_buscar[$i]->nombre_deporte."</td>
                  <td>".$results_buscar[$i]->categoria."</td>
     		   </tr>";
@@ -99,6 +101,6 @@
   </div>
   </div>
 </body>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script src="js/jasny-bootstrap.min.js"></script>
 </html>

@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	// unset($_SESSION['correcto']);
- 	// header('Location: ../../equipos?id_equipo='.$_POST['id_equi']);
+ 	header('Location: ../../equipos?id_equipo='.$_POST['id_equi']);
  	include "../conexion.php";
 
  	// echo $_POST['nombreEquipo'];

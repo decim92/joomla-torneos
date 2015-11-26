@@ -4,8 +4,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Document</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/jasny-bootstrap.min">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
@@ -51,7 +51,7 @@ $(document).ready(function(){
     $resultados_partidos1 = array();
     $resultados_partidos2 = array();
   else:
-    echo "<p>WTF</p>";
+    echo "<div class='alert alert-warning col-xs-12 col-sm-12' role='alert'>No se ha definido un torneo.</div>";
   endif;
   
 ?>
@@ -359,7 +359,7 @@ $(document).ready(function(){
   </div>
 
 <div id="result"></div>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="js/jasny-bootstrap.min.js"></script>
   </body>
 

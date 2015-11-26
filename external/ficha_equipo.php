@@ -26,7 +26,7 @@
 	<title>Document</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-<link rel="stylesheet" href="css/jasny-bootstrap.min">
+<link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
@@ -185,6 +185,11 @@
       echo"
         <td>
           <img src='img/fotos/".$results_tabla_j[$i]->id_ju.".png' height='24px' width='24px'>   
+        </td>";
+      elseif(file_exists("img/fotos/".$results_tabla_j[$i]->id_ju.".jpg")):
+        echo"
+        <td>
+          <img src='img/fotos/".$results_tabla_j[$i]->id_ju.".jpg' height='24px' width='24px'>   
         </td>";
       else:
         echo"

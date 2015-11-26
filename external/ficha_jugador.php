@@ -25,7 +25,7 @@
 	<title>Document</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-<link rel="stylesheet" href="css/jasny-bootstrap.min">
+<link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 </head>
@@ -106,7 +106,7 @@
         ?>
         <div class="form-group col-sm-6">
         <label for="nombreEquipo" class="control-label">FECHA NACIMIENTO*</label>           
-          <input type="text" class="form-control" id="a_nombre_equipo" name="a_nombre_equipo" value="<?php echo $results_equipo[0]->nombre_equipo;?>">
+          <input type="text" class="form-control" id="a_nombre_equipo" name="a_nombre_equipo" value="<?php echo $results_ju[0]->f_nacimiento;?>">
         </div>
         <div class="form-group col-sm-6">
         <label for="a_direccion" class="control-label">DIRECCIÓN*</label>           
@@ -146,6 +146,7 @@
           <div class="col-sm-5 col-sm-offset-1">
       <form action="validaciones/v_foto.php" class="form" role="form" name="jugador" id="jugador" method="post" target="_parent" enctype="multipart/form-data">
       <input type="hidden" name="id_jugador" value="<?php echo $results_ju[0]->id_ju;?>">
+      <input type="hidden" name="id_equipo" value="<?php echo $_GET['id_equipo'];?>">
         <div class="form-group col-sm-8">
         <!-- <label for="escudo" class="control-label">ESCUDO </label>            -->
         <span class="btn btn-info btn-file">

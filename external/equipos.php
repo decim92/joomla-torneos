@@ -103,7 +103,7 @@
   	<title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">  
 <link rel="stylesheet" type="text/css" href="css/my_navbars.css">
-<link rel="stylesheet" href="css/jasny-bootstrap.min">
+<link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 
 <link rel="stylesheet" type="text/css" href="css/custom.css">
 <script src='js/spectrum.js'></script>
@@ -141,7 +141,13 @@ $(document).ready(function() {
     });
 })
 // ]]></script>
- 
+ <?php 
+  //<a href='../index.php/definir-tor?id_torneo=".$id_t."&descripcion=".$descripcion."' target='_parent'>
+  //<a href='../index.php/definir-tor?id_torneo=".$id_t."' target='_parent'>
+  //class='btn btn-info' role='button'
+  if(isset($_SESSION['id_torneo'])):
+  ?>
+
   	<nav class="navbar navbar-default" role="navigation">
   <!-- El logotipo y el icono que despliega el menú se agrupan
        para mostrarlos mejor en los dispositivos móviles -->
@@ -179,12 +185,7 @@ $(document).ready(function() {
 </nav>
 
 
-	<?php 
-	//<a href='../index.php/definir-tor?id_torneo=".$id_t."&descripcion=".$descripcion."' target='_parent'>
-	//<a href='../index.php/definir-tor?id_torneo=".$id_t."' target='_parent'>
-	//class='btn btn-info' role='button'
-	if(isset($_SESSION['id_torneo'])):
-    ?>
+	
   
   <table class="table table-hover">
   <thead>
@@ -284,7 +285,7 @@ $(document).ready(function() {
         endfor;        
 		
   	else:
-  		echo "WTF";
+  		echo "<div class='alert alert-warning col-xs-12 col-sm-12' role='alert'>No se ha definido un torneo.</div>";
   	endif;
 	?>		
 	</tbody>

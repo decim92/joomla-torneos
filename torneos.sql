@@ -110,7 +110,7 @@ INSERT INTO `equipo` VALUES (17,'Purnio F.C','fff700|000000','fff700|000000',410
 INSERT INTO `equipo` VALUES (18,'Palmareal F.C','fff700|000000','fff700|000000',410,'');
 INSERT INTO `equipo` VALUES (19,'Tropicana F.C','fff700|000000','fff700|000000',410,'');
 INSERT INTO `equipo` VALUES (20,'Bocana F.C','fff700|000000','fff700|000000',410,'');
-INSERT INTO `equipo` VALUES (21,'Pecheros','fff700|000000','fff700|000000',410,'');
+INSERT INTO `equipo` VALUES (21,'Pecheros','fff700|d10c0c','fff700|000000',410,'Lane Cove, Nueva Gales del Sur, Australia');
 INSERT INTO `equipo` VALUES (24,'Petrol','fff700|000000','fff700|000000',410,'');
 INSERT INTO `equipo` VALUES (25,'Instituto Alegria','fff700|000000','b7b33e|000000',410,'');
 INSERT INTO `equipo` VALUES (26,'(libre)','fff700|000000','fff700|000000',0,'');
@@ -254,7 +254,7 @@ CREATE TABLE `jugador` (
   `id_usuario` int(11) NOT NULL,
   `foto` varchar(250) COLLATE latin1_spanish_ci NOT NULL,
   PRIMARY KEY (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=444 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=445 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -704,6 +704,7 @@ INSERT INTO `jugador` VALUES (438,'JOSE ANTONIO','MEJIA QUISPE','1073327176','19
 INSERT INTO `jugador` VALUES (439,'JOSE LUIS','MORENO HUAYTALLA ','1073327177','1991-10-29','ARTEAGA NO 729','3017403549','jorgesc@oo.upc.es',0,'');
 INSERT INTO `jugador` VALUES (440,'CARLOS MARIO','MAGUIÃ‘A CCAHUANA ','1073327178','1991-10-30','AV. INDEPENDENCIA N. 1282-A','3017403550','j.sanchez@iem.cfmac.csic.es',0,'');
 INSERT INTO `jugador` VALUES (443,'asdf','asdf','2345','2015-11-04','asgsd','2435','asdf@szdf.ee',0,'');
+INSERT INTO `jugador` VALUES (444,'George','Random','1020394','1971-11-25','Calle del ayer','5555555','asdf@asdfasdf.es',0,'');
 /*!40000 ALTER TABLE `jugador` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -728,7 +729,7 @@ CREATE TABLE `jugador_equipo_t` (
   CONSTRAINT `FK_JT_EQUIP` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id_equipo`),
   CONSTRAINT `FK_JT_TORNE` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`),
   CONSTRAINT `jugador_equipo_t_ibfk_1` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -753,6 +754,7 @@ INSERT INTO `jugador_equipo_t` VALUES (58,NULL,27,2);
 INSERT INTO `jugador_equipo_t` VALUES (59,NULL,28,2);
 INSERT INTO `jugador_equipo_t` VALUES (60,NULL,29,2);
 INSERT INTO `jugador_equipo_t` VALUES (61,443,21,1);
+INSERT INTO `jugador_equipo_t` VALUES (62,444,21,1);
 /*!40000 ALTER TABLE `jugador_equipo_t` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -842,18 +844,18 @@ LOCK TABLES `partido` WRITE;
 /*!40000 ALTER TABLE `partido` DISABLE KEYS */;
 INSERT INTO `partido` VALUES (54,NULL,NULL,2,'',NULL,NULL,24,0,0,0,0,0);
 INSERT INTO `partido` VALUES (55,NULL,NULL,2,'',NULL,NULL,25,0,0,0,0,0);
-INSERT INTO `partido` VALUES (74,'2015-11-14',NULL,1,'','23:00:00','',38,0,0,21,0,20);
+INSERT INTO `partido` VALUES (74,'2015-11-06',NULL,1,'','23:00:00','',38,0,1,21,0,20);
 INSERT INTO `partido` VALUES (75,NULL,NULL,1,'',NULL,NULL,39,0,0,0,0,0);
 INSERT INTO `partido` VALUES (76,NULL,NULL,1,'',NULL,NULL,40,0,0,0,0,0);
 INSERT INTO `partido` VALUES (77,NULL,NULL,1,'',NULL,NULL,40,0,0,0,0,0);
-INSERT INTO `partido` VALUES (121,NULL,NULL,1,'',NULL,NULL,67,0,0,0,0,0);
+INSERT INTO `partido` VALUES (121,'2015-12-04',NULL,1,'','00:00:00','',67,0,0,0,0,0);
 INSERT INTO `partido` VALUES (122,NULL,NULL,1,'',NULL,NULL,68,0,0,0,0,0);
 INSERT INTO `partido` VALUES (123,NULL,NULL,1,'',NULL,NULL,68,0,0,0,0,0);
-INSERT INTO `partido` VALUES (124,NULL,NULL,1,'',NULL,NULL,69,0,0,0,0,0);
+INSERT INTO `partido` VALUES (124,'2015-11-29',NULL,1,'','00:00:00','',69,0,0,0,0,0);
 INSERT INTO `partido` VALUES (125,NULL,NULL,1,'',NULL,NULL,69,0,0,0,0,0);
 INSERT INTO `partido` VALUES (126,NULL,NULL,1,'',NULL,NULL,69,0,0,0,0,0);
 INSERT INTO `partido` VALUES (127,NULL,NULL,1,'',NULL,NULL,69,0,0,0,0,0);
-INSERT INTO `partido` VALUES (128,'0000-00-00',NULL,1,'','00:00:00','',70,0,1,24,0,21);
+INSERT INTO `partido` VALUES (128,'2015-11-28',NULL,1,'','00:00:00','',70,0,0,24,0,21);
 /*!40000 ALTER TABLE `partido` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -950,7 +952,7 @@ CREATE TABLE `torneo` (
   KEY `id_categoria` (`id_categoria`),
   KEY `id_usuario` (`id_usuario`),
   CONSTRAINT `FK_TOR_CAT` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id_categoria`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -961,6 +963,7 @@ LOCK TABLES `torneo` WRITE;
 /*!40000 ALTER TABLE `torneo` DISABLE KEYS */;
 INSERT INTO `torneo` VALUES (1,'Liga Coreducacion Plus',3,410,1,1,0,3,1,'La Dorada, Caldas, Colombia',1);
 INSERT INTO `torneo` VALUES (2,'Liga T',3,411,2,0,0,3,1,'Lane Cove, Nueva Gales del Sur, Australia',1);
+INSERT INTO `torneo` VALUES (3,'Torneo Tropical',3,410,1,1,0,3,1,'Liverpool Street, Darlinghurst, Nueva Gales del Sur, Australia',1);
 /*!40000 ALTER TABLE `torneo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -973,4 +976,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-18 21:17:39
+-- Dump completed on 2015-11-25 23:55:03

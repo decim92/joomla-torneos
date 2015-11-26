@@ -6,6 +6,84 @@
 
  	if(isset($_POST['btnPartido'])):
  		if($_POST['btnPartido']):
+ 			//solo fecha
+ 			if($_POST['fecha'] != "0000-00-00"):
+ 				try{
+					$db_act_p = & JDatabase::getInstance( $option );
+
+//Actualizar  fechas 
+					$query_act_p = $db_act_p->getQuery(true);
+
+							$fields = array(
+								$db_act_p->quoteName('fecha') . ' = ' . $db_act_p->quote($_POST['fecha']),
+								$db_act_p->quoteName('hora') . ' = ' . $db_act_p->quote($_POST['hora']),
+								$db_act_p->quoteName('lugar') . ' = ' . $db_act_p->quote($_POST['pac-input'])
+							);
+					
+					$conditions = array(
+						$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+						);
+					 
+					$query_act_p
+					    ->update($db_act_p->quoteName('partido'))
+					    ->set($fields)
+					    ->where($conditions);
+					$db_act_p->setQuery($query_act_p);
+					$db_act_p->execute();
+
+					date_default_timezone_set("America/Bogota");
+						$hoy = getdate();
+						$mifecha = $hoy[year]."-".$hoy[mon]."-".$hoy[mday];
+						$mihora = $hoy[hours].":".$hoy[minutes].":".$hoy[seconds];
+						echo $mifecha."<br>";
+						echo $mihora."<br>";
+						echo $_POST['fecha']."<br>";
+						echo $_POST['hora']."<br>";
+
+
+						if($_POST['fecha']<= $mifecha && $_POST['hora']< $mihora):
+							$query_act_p = $db_act_p->getQuery(true);
+							$fields = array(
+								$db_act_p->quoteName('jugado') . ' = ' . 1		
+							);							
+
+							
+							$conditions = array(
+								$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+								);
+							 
+							$query_act_p
+							    ->update($db_act_p->quoteName('partido'))
+							    ->set($fields)
+							    ->where($conditions);
+							$db_act_p->setQuery($query_act_p);
+							$db_act_p->execute();
+						else:
+							$query_act_p = $db_act_p->getQuery(true);
+							$fields = array(
+								$db_act_p->quoteName('jugado') . ' = ' . 0		
+							);							
+
+							
+							$conditions = array(
+								$db_act_p->quoteName('id_partido') . ' = ' . $_POST['id_partido']
+								);
+							 
+							$query_act_p
+							    ->update($db_act_p->quoteName('partido'))
+							    ->set($fields)
+							    ->where($conditions);
+							$db_act_p->setQuery($query_act_p);
+							$db_act_p->execute();
+						endif;
+				}
+				catch(Exception $e){
+					echo $e;
+				}
+			endif;
+
+ 			//End solo fecha
+ 			//normal ini
  			if($_POST['tantos1'] != "" && $_POST['tantos2'] != ""):
  				try{
 					$db_act_p = & JDatabase::getInstance( $option );

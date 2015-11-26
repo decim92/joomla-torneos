@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/jasny-bootstrap.min">
+	<link rel="stylesheet" href="css/jasny-bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/custom.css">
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">

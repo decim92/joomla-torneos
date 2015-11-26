@@ -80,9 +80,6 @@ table th{
 
 }
 
-.top-bordered {
-    border-top: 1px solid #ddd
-}
 
 #play-off-cross .cruces-eliminatoria {
     white-space: nowrap;
@@ -257,4 +254,8 @@ table th{
     height: 15px;
     background-color: #df3934;
     margin:auto;
+}
+
+.pull-right{
+    clear: left;
 }
