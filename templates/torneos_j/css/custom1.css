@@ -14,3 +14,11 @@
 .margen_i_frame{
 	margin-top:6px;
 }
+
+
+@media print {
+   
+   header, div.moduletable_menu, ul.breadcrumb, footer {
+	display: none;
+	}
+}

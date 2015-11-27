@@ -203,7 +203,6 @@
           ".$results_tabla_j[$i]->nombres."
           </a>
         </td>  
-        <td></td>
         <td>".$results_tabla_j[$i]->apellidos."</td>
         <td>".$results_tabla_j[$i]->documento."</td>
         <td>".$results_tabla_j[$i]->f_nacimiento."</td>

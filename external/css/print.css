@@ -1,0 +1,91 @@
+
+@page{
+	size: landscape;
+	margin: 3cm;
+}
+
+
+
+
+
+body {
+line-height: 1;
+color:#000; font-size:9pt; 
+overflow-x:hidden; 
+}
+	
+	input, textarea { 
+		 -webkit-border-radius: 0pt !important;
+		-moz-border-radius: 0pt !important;
+		-o-border-radius: 0pt !important;
+		border-radius: 0pt !important;
+		border: none !important;
+	  -webkit-box-shadow: none !important;
+	  -moz-box-shadow: none !important;
+	  box-shadow: none !important;
+	  outline: none !important;
+	  font-size: 12pt;
+	  float: right;
+}
+
+label{
+	font-size: 14pt;	
+}
+
+
+   ol.breadcrumb, div h4, ul.nav, input.btn, h3, button.btn{
+	display: none !important;
+	}
+
+	.no-print{
+		display: none !important;	
+	}
+
+	.row{
+		width: 150pt;
+		height: 150pt;
+		float: left;
+		margin-right: 20pt;
+	}
+
+	img{
+		width: 150pt;
+		height: 150pt;
+	}
+
+	.form-group{
+		display: inline-block;
+		width: 400pt;
+	}
+
+	#c_torneo{
+		display: inline-block;
+		width: 400pt;
+		margin: 0 auto;
+
+	}
+
+	#c_logo{
+		width: 100pt;
+		height: 100pt;
+		display: inline;
+	}
+
+	#c_equipo{
+		display: block;
+		width: 400pt;
+		margin: 15pt 0;
+	}
+
+	#c_equipo label{
+		font-size: 20pt;
+	}
+
+	#s_equipo{
+		font-size: 18pt;
+	}
+
+	#s_torneo{
+		font-size: 24pt;
+	}
+

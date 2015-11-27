@@ -254,7 +254,7 @@ CREATE TABLE `jugador` (
   `id_usuario` int(11) NOT NULL,
   `foto` varchar(250) COLLATE latin1_spanish_ci NOT NULL,
   PRIMARY KEY (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=454 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=447 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -731,7 +731,7 @@ CREATE TABLE `jugador_equipo_t` (
   CONSTRAINT `FK_JT_EQUIP` FOREIGN KEY (`id_equipo`) REFERENCES `equipo` (`id_equipo`),
   CONSTRAINT `FK_JT_TORNE` FOREIGN KEY (`id_torneo`) REFERENCES `torneo` (`id_torneo`),
   CONSTRAINT `jugador_equipo_t_ibfk_1` FOREIGN KEY (`id_jugador`) REFERENCES `jugador` (`id_jugador`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -980,4 +980,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-26 15:01:02
+-- Dump completed on 2015-11-27  3:49:00
